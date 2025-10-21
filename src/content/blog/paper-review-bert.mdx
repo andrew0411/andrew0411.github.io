@@ -12,7 +12,7 @@ draft: false
 
 **BERT** (Bidirectional Encoder Representations from Transformers) is a landmark NLP model introduced by Google AI in 2018. In this review, we summarize the key ideas:
 
-- BERT uses a **masked language modeling** objective and **next sentence prediction** for pre-training:contentReference[oaicite:29]{index=29}.
+- BERT uses a **masked language modeling** objective and **next sentence prediction** for pre-training.
 - It achieved state-of-the-art performance on many NLP tasks by enabling **bidirectional context** in encoding.
 
 ## Key Contributions
@@ -29,7 +29,6 @@ The famous equation $E = mc^2$ is unrelated but shown here as a KaTeX test.
 ## Conclusion
 
 BERT opened the door to a new era of NLP models (the Transformer era), and techniques like fine-tuning on pre-trained models became the norm.
-
 ```python
 # Sample code: (just for illustration)
 import torch
@@ -39,3 +38,4 @@ tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 model = BertModel.from_pretrained('bert-base-uncased')
 inputs = tokenizer("Hello, world!", return_tensors='pt')
 outputs = model(**inputs)
+```
