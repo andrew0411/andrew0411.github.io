@@ -2,52 +2,145 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Search">
-  <div class="search-page">
-    <h1>Search</h1>
-    <p>Type keywords to search through blog posts:</p>
-    <!-- 검색 UI 컨테이너 -->
-    <div id="search-container"></div>
-    <!-- 태그라인 추가 -->
-    <p class="search-tagline">Search. Sense. Synthesize.</p>
-  </div>
+<BaseLayout title="Publications" description="Publications and Research Work">
+  <div class="content-wrapper">
+    <h1>Publications</h1>
+    <p class="scholar-link">
+      <a href="https://scholar.google.com/citations?user=vHVHgLwAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">
+        Google Scholar Profile
+      </a>
+    </p>
 
-  <!-- Pagefind UI 스크립트 및 스타일 포함 -->
-  <link rel="stylesheet" href="/pagefind/pagefind-ui.css">
-  <script src="/pagefind/pagefind-ui.js" is:inline></script>
-  <script is:inline>
-    window.addEventListener('DOMContentLoaded', () => {
-      new PagefindUI({ element: "#search-container" });
-    });
-  </script>
+    <section class="year-section">
+      <h2>2024</h2>
+      <ul>
+        <li>
+          Lee, S., Lee, S., <strong>Lee, J.</strong>, Lee, W., & Son, Y. (2024).
+          Graph contrastive learning with consistency regularization.
+          <em>Pattern Recognition Letters</em>, 181, 43-49.
+        </li>
+      </ul>
+    </section>
+
+    <section class="year-section">
+      <h2>2023</h2>
+      <ul>
+        <li>
+          Lee, J., <strong>Lee, J.</strong>, Shin, S., Son, Y., & Han, Y. K. (2023).
+          Machine Learning for the Expedited Screening of Hydrogen Evolution Catalysts for Transition Metal‐Doped Transition Metal Dichalcogenides.
+          <em>International Journal of Energy Research</em>, 2023(1), 6612054.
+        </li>
+
+        <li>
+          <strong>Lee, J.</strong>, Shin, S., Lee, J., Han, Y. K., Lee, W., & Son, Y. (2023).
+          Genetic descriptor search algorithm for predicting hydrogen adsorption free energy of 2D material.
+          <em>Scientific Reports</em>, 13(1), 12729.
+        </li>
+
+        <li>
+          Jeong, B., <strong>Lee, J.</strong>, Choi, J., Song, M., Son, Y., & Kim, S. Y. (2023).
+          A 0.57 mW@ 1 FPS In-Column Analog CNN Processor Integrated Into CMOS Image Sensor.
+          <em>IEEE Access</em>, 11, 61082-61090.
+        </li>
+
+        <li>
+          Jeong, B., <strong>Lee, J.</strong>, Lee, S., Lee, S., Son, Y., & Kim, S. Y. (2023).
+          A 240 FPS In-column Binarized Neural Network Processing in CMOS Image Sensors.
+          <em>IEEE Transactions on Circuits and Systems II: Express Briefs</em>.
+        </li>
+      </ul>
+    </section>
+  </div>
 </BaseLayout>
 
 <style>
-  .search-page {
-    max-width: 800px;
+  .content-wrapper {
+    max-width: 900px;
     margin: 2rem auto;
     padding: 0 1rem;
-  }
-  .search-page h1 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
-  .search-page p {
-    margin-bottom: 1.5rem;
-  }
-  .search-tagline {
-    font-style: italic;
-    color: rgba(0, 0, 0, 0.4);
-    text-align: center;
-    margin-top: 2rem;
-    font-size: 1.1rem;
-    letter-spacing: 0.5px;
+    line-height: 1.8;
   }
 
-  /* 다크모드 지원 (필요시) */
+  .content-wrapper h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+  }
+
+  .scholar-link {
+    margin-bottom: 2.5rem;
+    font-size: 1.1rem;
+  }
+
+  .scholar-link a {
+    color: #4285f4;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+
+  .scholar-link a:hover {
+    color: #1a73e8;
+    text-decoration: underline;
+  }
+
+  .year-section {
+    margin-bottom: 3rem;
+  }
+
+  .year-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e0e0e0;
+    font-weight: 600;
+  }
+
+  .year-section ul {
+    list-style: none;
+    margin-left: 0;
+    padding-left: 0;
+  }
+
+  .year-section li {
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+    position: relative;
+  }
+
+  .year-section li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #666;
+    font-weight: bold;
+  }
+
+  .year-section em {
+    font-style: italic;
+    color: #555;
+  }
+
+  /* 다크모드 지원 */
   @media (prefers-color-scheme: dark) {
-    .search-tagline {
-      color: rgba(255, 255, 255, 0.6);
+    .year-section h2 {
+      border-bottom-color: #404040;
+    }
+
+    .year-section li::before {
+      color: #aaa;
+    }
+
+    .year-section em {
+      color: #aaa;
+    }
+
+    .scholar-link a {
+      color: #8ab4f8;
+    }
+
+    .scholar-link a:hover {
+      color: #aecbfa;
     }
   }
 </style>
