@@ -5,23 +5,75 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 <BaseLayout title="Curriculum Vitae" description="CV of Your Name">
   <div class="content-wrapper">
     <h1>Curriculum Vitae</h1>
-    <p>You can download my CV here:</p>
-    <p><a href="/cv.pdf" target="_blank">Download CV (PDF)</a></p>
+    <p>You can download my CV here: <a href="/cv.pdf" download>Download CV (PDF)</a></p>
     <p>Last updated: <em>2025-10-20</em></p>
+
+    <div class="pdf-viewer-container">
+      <iframe
+        src="/cv.pdf"
+        title="CV PDF Viewer"
+        class="pdf-viewer"
+      ></iframe>
+    </div>
+
+    <div class="fallback-message">
+      <p>If the PDF doesn't display above, please <a href="/cv.pdf" target="_blank">click here to open it in a new tab</a>.</p>
+    </div>
   </div>
 </BaseLayout>
 
 <style>
   .content-wrapper {
-    max-width: 800px;
+    max-width: 1000px;
     margin: 2rem auto;
     padding: 0 1rem;
   }
+
   .content-wrapper h1 {
     font-size: 2rem;
     margin-bottom: 1rem;
   }
+
   .content-wrapper p {
     margin-bottom: 1rem;
+  }
+
+  .pdf-viewer-container {
+    margin: 2rem 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .pdf-viewer {
+    width: 100%;
+    height: 800px;
+    border: none;
+  }
+
+  .fallback-message {
+    text-align: center;
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+  }
+
+  .fallback-message a {
+    color: #0066cc;
+    text-decoration: underline;
+  }
+
+  /* 모바일 반응형 */
+  @media (max-width: 768px) {
+    .pdf-viewer {
+      height: 600px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .pdf-viewer {
+      height: 500px;
+    }
   }
 </style>
