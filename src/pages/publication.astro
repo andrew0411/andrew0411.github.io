@@ -2,34 +2,52 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Publication" description="Publications and Research Work">
-  <div class="content-wrapper">
-    <h1>Publications</h1>
-    <p>Below are selected publications and research works:</p>
-    <ul>
-      <li><strong>Paper Title 1</strong> - Conference/Journal, Year. <a href="#" target="_blank">Download PDF</a></li>
-      <li><strong>Paper Title 2</strong> - Conference/Journal, Year. <a href="#" target="_blank">Download PDF</a></li>
-      <!-- More entries... -->
-    </ul>
+<BaseLayout title="Search">
+  <div class="search-page">
+    <h1>Search</h1>
+    <p>Type keywords to search through blog posts:</p>
+    <!-- 검색 UI 컨테이너 -->
+    <div id="search-container"></div>
+    <!-- 태그라인 추가 -->
+    <p class="search-tagline">Search. Sense. Synthesize.</p>
   </div>
+
+  <!-- Pagefind UI 스크립트 및 스타일 포함 -->
+  <link rel="stylesheet" href="/pagefind/pagefind-ui.css">
+  <script src="/pagefind/pagefind-ui.js" is:inline></script>
+  <script is:inline>
+    window.addEventListener('DOMContentLoaded', () => {
+      new PagefindUI({ element: "#search-container" });
+    });
+  </script>
 </BaseLayout>
 
 <style>
-  .content-wrapper {
+  .search-page {
     max-width: 800px;
     margin: 2rem auto;
     padding: 0 1rem;
-    line-height: 1.6;
   }
-  .content-wrapper h1 {
+  .search-page h1 {
     font-size: 2rem;
     margin-bottom: 1rem;
   }
-  .content-wrapper ul {
-    list-style: disc;
-    margin-left: 1.5rem;
+  .search-page p {
+    margin-bottom: 1.5rem;
   }
-  .content-wrapper li {
-    margin-bottom: 0.5rem;
+  .search-tagline {
+    font-style: italic;
+    color: rgba(0, 0, 0, 0.4);
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+  }
+
+  /* 다크모드 지원 (필요시) */
+  @media (prefers-color-scheme: dark) {
+    .search-tagline {
+      color: rgba(255, 255, 255, 0.6);
+    }
   }
 </style>
