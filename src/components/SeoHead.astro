@@ -1,0 +1,44 @@
+---
+import { siteConfig } from '../config/siteConfig';
+
+interface Props {
+  title?: string;
+  description?: string;
+  url?: string;
+  image?: string;
+}
+
+// 전달된 props와 siteConfig를 조합하여 메타 정보 결정
+const {
+  title = siteConfig.title,
+  description = siteConfig.description,
+  url = siteConfig.url,
+  image = `${siteConfig.url}/og-image.jpg`  // 기본 공유 이미지 경로 (필요시 변경)
+} = Astro.props;
+
+const fullTitle = title === siteConfig.title ? title : `${title} | ${siteConfig.title}`;
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="generator" content={Astro.generator} />
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+
+<!-- Open Graph (OG) 메타태그 -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content={url} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={image} />
+
+<!-- Twitter 카드 메타태그 -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={url} />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={image} />
+
+<link rel="canonical" href={url} />
+<link rel="alternate" type="application/rss+xml" href={`${siteConfig.url}/rss.xml`} title={`${siteConfig.title} RSS Feed`} />

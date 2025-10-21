@@ -1,0 +1,137 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import Paginator from '../../components/Paginator.astro';
+import { getAllPosts, paginate } from '../../lib/content';
+import { categories } from '../../config/categories';
+
+const pageParam = Astro.url.searchParams.get('page');
+const currentPage = pageParam ? parseInt(pageParam) : 1;
+
+const allPosts = await getAllPosts();
+const paginated = paginate(allPosts, currentPage, 6);
+---
+
+<BaseLayout title="Blog" description="Latest posts on the blog">
+  <div class="blog-container">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Blog</h1>
+        <p>AI · Research · Notes</p>
+      </div>
+    </section>
+
+    <!-- Category Filter Bar -->
+    <nav class="category-bar" aria-label="Blog Categories">
+      {categories.map(cat => (
+        <a href={`/blog/category/${cat.id}`} class="category-link">{cat.name}</a>
+      ))}
+    </nav>
+
+    <!-- Posts Grid -->
+    <section class="posts-section">
+      <div class="posts-grid">
+        {paginated.items.map(post => (
+          <PostCard
+            title={post.data.title}
+            url={`/blog/${post.slug}`}
+            date={post.data.date}
+            summary={post.data.summary}
+            category={post.data.category}
+            tags={post.data.tags}
+            thumbnail={post.data.thumbnail}
+          />
+        ))}
+      </div>
+
+      {paginated.items.length === 0 && (
+        <p class="no-posts">No posts yet.</p>
+      )}
+
+      <Paginator
+        current={paginated.current}
+        pages={paginated.pages}
+        prev={paginated.prev}
+        next={paginated.next}
+        buildHref={(p) => `/blog?page=${p}`}
+      />
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .blog-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .hero {
+    position: relative;
+    height: 300px;
+    background: linear-gradient(135deg, var(--color-primary) 0%, #8b5cf6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+  .hero-content {
+    text-align: center;
+    color: white;
+  }
+  .hero h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+  }
+  .hero p {
+    font-size: 1.25rem;
+    opacity: 0.9;
+  }
+  .category-bar {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    background-color: var(--color-bg-secondary);
+    overflow-x: auto;
+  }
+  .category-link {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: var(--color-text);
+  }
+  .category-link:hover {
+    background-color: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+  }
+  .posts-section {
+    padding: 2rem;
+  }
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  .no-posts {
+    text-align: center;
+    padding: 4rem 0;
+    color: var(--color-text);
+    opacity: 0.6;
+  }
+  @media (max-width: 768px) {
+    .hero {
+      height: 200px;
+    }
+    .hero h1 {
+      font-size: 2rem;
+    }
+    .posts-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

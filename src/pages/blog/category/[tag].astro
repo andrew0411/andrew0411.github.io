@@ -1,0 +1,152 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostCard from '../../../components/PostCard.astro';
+import Paginator from '../../../components/Paginator.astro';
+import { getPostsByTag, getUniqueTags, paginate } from '../../../lib/content';
+import { categories } from '../../../config/categories';
+
+export async function getStaticPaths() {
+  const tags = await getUniqueTags();
+  return tags.map(tag => ({ params: { tag } }));
+}
+
+const { tag } = Astro.params;
+const pageParam = Astro.url.searchParams.get('page');
+const currentPage = pageParam ? parseInt(pageParam) : 1;
+
+const posts = await getPostsByTag(tag);
+const paginated = paginate(posts, currentPage, 6);
+---
+
+<BaseLayout title={`Tag: ${tag}`}>
+  <div class="tag-page">
+    <div class="main-content">
+      <header class="page-header">
+        <h1>Tag: #{tag}</h1>
+        <p>{posts.length} posts</p>
+      </header>
+
+      <div class="posts-grid">
+        {paginated.items.map(post => (
+          <PostCard
+            title={post.data.title}
+            url={`/blog/${post.slug}`}
+            date={post.data.date}
+            summary={post.data.summary}
+            category={post.data.category}
+            tags={post.data.tags}
+            thumbnail={post.data.thumbnail}
+          />
+        ))}
+      </div>
+
+      {paginated.items.length === 0 && (
+        <p class="no-posts">No posts with tag #{tag}.</p>
+      )}
+
+      <Paginator
+        current={paginated.current}
+        pages={paginated.pages}
+        prev={paginated.prev}
+        next={paginated.next}
+        buildHref={(p) => `/blog/tag/${tag}?page=${p}`}
+      />
+    </div>
+
+    <aside class="sidebar">
+      <section class="sidebar-section">
+        <h3>Categories</h3>
+        <ul>
+          {categories.map(cat => (
+            <li>
+              <a href={`/blog/category/${cat.id}`} class="category-link">{cat.name}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+      <!-- (추가로 모든 태그 목록을 넣고 싶다면 구현 가능) -->
+    </aside>
+  </div>
+</BaseLayout>
+
+<style>
+  .tag-page {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 3rem;
+  }
+  .page-header {
+    margin-bottom: 2rem;
+  }
+  .page-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .page-header p {
+    color: var(--color-text);
+    opacity: 0.6;
+  }
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  .no-posts {
+    text-align: center;
+    padding: 4rem 0;
+    color: var(--color-text);
+    opacity: 0.6;
+  }
+  .sidebar {
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+  }
+  .sidebar-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background-color: var(--color-bg-secondary);
+    border-radius: 12px;
+  }
+  .sidebar-section h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+  .sidebar-section ul {
+    list-style: none;
+    padding: 0;
+  }
+  .sidebar-section li {
+    margin-bottom: 0.5rem;
+  }
+  .category-link {
+    display: block;
+    padding: 0.5rem;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--color-text);
+    transition: background-color 0.2s ease;
+  }
+  .category-link:hover {
+    background-color: var(--color-primary);
+    color: white;
+  }
+  @media (max-width: 1024px) {
+    .tag-page {
+      grid-template-columns: 1fr;
+    }
+    .sidebar {
+      position: static;
+      margin-top: 3rem;
+    }
+  }
+  @media (max-width: 768px) {
+    .posts-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

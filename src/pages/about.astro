@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About" description="About the author">
+  <div class="content-wrapper">
+    <h1>About Me</h1>
+    <p>This is the About page. Write about yourself here.</p>
+    <p>Include your interests, background, or the purpose of this blog.</p>
+  </div>
+</BaseLayout>
+
+<style>
+  .content-wrapper {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    line-height: 1.6;
+  }
+  .content-wrapper h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  .content-wrapper p {
+    margin-bottom: 1rem;
+  }
+</style>

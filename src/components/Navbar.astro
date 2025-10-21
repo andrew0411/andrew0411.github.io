@@ -1,0 +1,71 @@
+---
+import { siteConfig } from '../config/siteConfig';
+import ThemeToggle from './ThemeToggle.astro';
+
+const currentPath = Astro.url.pathname;  // 현재 페이지의 경로 (예: "/blog", "/about" 등)
+---
+
+<nav>
+  <div class="nav-container">
+    <!-- 로고: 사이트 제목을 홈 링크로 사용 -->
+    <a href="/" class="logo">{siteConfig.title}</a>
+
+    <div class="nav-links">
+      {siteConfig.nav.map(item => (
+        <a
+          href={item.href}
+          class:list={['nav-link', { active: currentPath.startsWith(item.href) && item.href !== '/' }]}
+        >
+          {item.label}
+        </a>
+      ))}
+      <ThemeToggle />
+    </div>
+  </div>
+</nav>
+
+<style>
+  nav {
+    background-color: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--color-text);
+  }
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+  }
+  .nav-link {
+    color: var(--color-text);
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+  .nav-link:hover,
+  .nav-link.active {
+    opacity: 1;
+  }
+  @media (max-width: 768px) {
+    .nav-container {
+      padding: 1rem;
+    }
+    .nav-links {
+      gap: 1rem;
+      font-size: 0.9rem;
+    }
+  }
+</style>

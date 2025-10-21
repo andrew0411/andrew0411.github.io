@@ -1,0 +1,133 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  prevPost?: { slug: string; title: string } | null;
+  nextPost?: { slug: string; title: string } | null;
+}
+
+const { post, prevPost, nextPost } = Astro.props;
+const { title, date, category, tags, summary } = post.data;
+const formattedDate = date.toISOString().split('T')[0];
+---
+
+<BaseLayout title={title} description={summary}>
+  <article class="blog-post">
+    <header class="post-header">
+      <h1>{title}</h1>
+      <div class="post-meta">
+        <time datetime={date.toISOString()}>{formattedDate}</time>
+        <a href={`/blog/category/${category}`} class="category">{category}</a>
+      </div>
+      {tags.length > 0 && (
+        <div class="post-tags">
+          {tags.map(tag => (
+            <a href={`/blog/tag/${tag}`} class="tag">#{tag}</a>
+          ))}
+        </div>
+      )}
+    </header>
+
+    <div class="prose">
+      <slot />   <!-- 글 본문 내용이 여기 들어감 -->
+    </div>
+
+    <nav class="post-navigation">
+      <div class="nav-item">
+        {prevPost && (
+          <>
+            <span class="nav-label">← Previous</span><br/>
+            <a href={`/blog/${prevPost.slug}`}>{prevPost.title}</a>
+          </>
+        )}
+      </div>
+      <div class="nav-item">
+        {nextPost && (
+          <>
+            <span class="nav-label">Next →</span><br/>
+            <a href={`/blog/${nextPost.slug}`}>{nextPost.title}</a>
+          </>
+        )}
+      </div>
+    </nav>
+  </article>
+</BaseLayout>
+
+<style>
+  .blog-post {
+    max-width: 860px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  .post-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+  .post-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    opacity: 0.7;
+  }
+  .category {
+    text-transform: capitalize;
+    color: var(--color-primary);
+  }
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .tag {
+    font-size: 0.85rem;
+    color: var(--color-primary);
+    opacity: 0.8;
+  }
+  .post-navigation {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .nav-item:last-child {
+    text-align: right;
+  }
+  .nav-label {
+    font-size: 0.8rem;
+    color: var(--color-text);
+    opacity: 0.6;
+  }
+  .nav-item a {
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--color-text);
+  }
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 2rem;
+    }
+    .post-navigation {
+      grid-template-columns: 1fr;
+    }
+    .nav-item:last-child {
+      text-align: left;
+    }
+  }
+</style>

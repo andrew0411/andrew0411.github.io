@@ -1,0 +1,107 @@
+---
+interface Props {
+  title: string;
+  url: string;
+  date: Date;
+  summary?: string;
+  category?: string;
+  tags?: string[];
+  thumbnail?: string;
+}
+
+const { title, url, date, summary, category, tags = [], thumbnail } = Astro.props;
+const formattedDate = date.toISOString().split('T')[0];  // YYYY-MM-DD 형식
+---
+
+<article class="post-card">
+  {thumbnail && (
+    <a href={url} class="thumbnail">
+      <img src={thumbnail} alt={title} loading="lazy" />
+    </a>
+  )}
+  <div class="content">
+    <h2><a href={url}>{title}</a></h2>
+    <div class="meta">
+      <time datetime={date.toISOString()}>{formattedDate}</time>
+      {category && <span class="category">{category}</span>}
+    </div>
+    {summary && <p class="summary">{summary}</p>}
+    {tags.length > 0 && (
+      <div class="tags">
+        {tags.map(tag => (
+          <a href={`/blog/tag/${tag}`} class="tag">#{tag}</a>
+        ))}
+      </div>
+    )}
+  </div>
+</article>
+
+<style>
+  .post-card {
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .post-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  .thumbnail {
+    display: block;
+    width: 100%;
+    aspect-ratio: 2 / 1;
+    overflow: hidden;
+  }
+  .thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  .post-card:hover .thumbnail img {
+    transform: scale(1.05);
+  }
+  .content {
+    padding: 1.5rem;
+  }
+  h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+  h2 a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  .meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--color-text);
+    opacity: 0.7;
+  }
+  .category {
+    text-transform: capitalize;
+  }
+  .summary {
+    color: var(--color-text);
+    opacity: 0.8;
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .tag {
+    font-size: 0.85rem;
+    color: var(--color-primary);
+    opacity: 0.8;
+  }
+  .tag:hover {
+    opacity: 1;
+  }
+</style>

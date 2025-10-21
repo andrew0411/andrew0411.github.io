@@ -1,0 +1,67 @@
+---
+interface Props {
+  current: number;
+  pages: number;
+  prev: number | null;
+  next: number | null;
+  buildHref: (page: number) => string;
+}
+
+const { current, pages, prev, next, buildHref } = Astro.props;
+---
+
+{pages > 1 && (
+  <nav class="paginator" aria-label="Pagination">
+    <div class="pagination-controls">
+      {prev ? (
+        <a href={buildHref(prev)} class="btn btn-prev" rel="prev">← Previous</a>
+      ) : (
+        <span class="btn btn-disabled">← Previous</span>
+      )}
+      <span class="page-info">Page {current} of {pages}</span>
+      {next ? (
+        <a href={buildHref(next)} class="btn btn-next" rel="next">Next →</a>
+      ) : (
+        <span class="btn btn-disabled">Next →</span>
+      )}
+    </div>
+  </nav>
+)}
+
+<style>
+  .paginator {
+    margin: 3rem 0;
+  }
+  .pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+  }
+  .btn {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+  }
+  .btn:not(.btn-disabled) {
+    background-color: var(--color-primary);
+    color: white;
+    text-decoration: none;
+  }
+  .btn:not(.btn-disabled):hover {
+    background-color: var(--color-primary-hover);
+    transform: translateY(-1px);
+  }
+  .btn-disabled {
+    background-color: var(--color-bg-secondary);
+    color: var(--color-text);
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .page-info {
+    font-size: 0.9rem;
+    color: var(--color-text);
+    opacity: 0.7;
+  }
+</style>

@@ -1,0 +1,22 @@
+{
+  "name": "jaehwan-blog",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && npx pagefind --site dist --output-subdir pagefind",
+    "preview": "astro preview",
+    "astro:sync": "astro sync"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.3.7",
+    "@astrojs/rss": "^4.0.12",
+    "@astrojs/sitemap": "^3.6.0",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0"
+  },
+  "devDependencies": {
+    "astro": "^5.14.7",
+    "pagefind": "^1.4.0"
+  }
+}

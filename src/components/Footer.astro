@@ -1,0 +1,29 @@
+---
+import { siteConfig } from '../config/siteConfig';
+---
+
+<footer>
+  <div class="footer-container">
+    <p>&copy; {new Date().getFullYear()} {siteConfig.author}. All rights reserved.</p>
+    <p>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></p>
+  </div>
+</footer>
+
+<style>
+  footer {
+    margin-top: 4rem;
+    padding: 2rem 1rem;
+    border-top: 1px solid var(--color-border);
+    text-align: center;
+    color: var(--color-text);
+    opacity: 0.7;
+  }
+  .footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  footer p {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+  }
+</style>

@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Search">
+  <div class="search-page">
+    <h1>Search</h1>
+    <p>Type keywords to search through blog posts:</p>
+    <!-- 검색 UI 컨테이너 -->
+    <div id="search-container"></div>
+  </div>
+
+  <!-- Pagefind UI 스크립트 및 스타일 포함 -->
+  <link rel="stylesheet" href="/pagefind/pagefind-ui.css">
+  <script src="/pagefind/pagefind-ui.js" is:inline></script>
+  <script is:inline>
+    window.addEventListener('DOMContentLoaded', () => {
+      new PagefindUI({ element: "#search-container" });
+    });
+  </script>
+</BaseLayout>
+
+<style>
+  .search-page {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  .search-page h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  .search-page p {
+    margin-bottom: 1.5rem;
+  }
+</style>

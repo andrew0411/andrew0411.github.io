@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout>
+  <div class="home-hero">
+    <h1>Welcome to My Tech Blog</h1>
+    <p>Exploring AI, Research, and Technology</p>
+    <a href="/blog" class="cta-button">Read Blog →</a>
+  </div>
+</BaseLayout>
+
+<style>
+  .home-hero {
+    max-width: 800px;
+    margin: 8rem auto;
+    padding: 0 2rem;
+    text-align: center;
+  }
+  .home-hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+  .home-hero p {
+    font-size: 1.25rem;
+    opacity: 0.8;
+    margin-bottom: 2rem;
+  }
+  .cta-button {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    background-color: var(--color-primary);
+    color: white;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+  .cta-button:hover {
+    background-color: var(--color-primary-hover);
+    transform: translateY(-2px);
+  }
+</style>
