@@ -8,6 +8,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <p>Type keywords to search through blog posts:</p>
     <!-- 검색 UI 컨테이너 -->
     <div id="search-container"></div>
+    <!-- 태그라인 추가 -->
+    <p class="search-tagline">Search. Sense. Synthesize.</p>
   </div>
 
   <!-- Pagefind UI 스크립트 및 스타일 포함 -->
@@ -32,5 +34,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
   .search-page p {
     margin-bottom: 1.5rem;
+  }
+  .search-tagline {
+    font-style: italic;
+    color: rgba(0, 0, 0, 0.4);
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+  }
+
+  /* 다크모드 지원 (필요시) */
+  @media (prefers-color-scheme: dark) {
+    .search-tagline {
+      color: rgba(255, 255, 255, 0.4);
+    }
   }
 </style>
