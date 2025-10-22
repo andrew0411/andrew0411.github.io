@@ -1,0 +1,231 @@
+---
+title: "Core Concepts in Large Language Models"
+date: 2025-05-10
+category: "AI"
+tags: ["LLM", "Prompting"]
+summary: "Understanding attention mechanisms and advanced prompting techniques in Large Language Models"
+thumbnail: "/blog/2025-05-10-about-llm-thumbnail.png"
+draft: false
+---
+
+## The power of Attention
+
+### Introduction
+
+The advent of Transformer architectures has revolutionized natural language processing, enabling models to capture complex
+dependencies in data sequences. Central to this innovation is the attention mechanism, which allows models to focus on relevant
+parts of the input data dynamically. This section delves into the intricacies of attention mechanisms, their implementation in Transformers,
+and recent advancements enhancing their efficiency and performance.
+
+### The Attention Mechanism
+
+Traditional models like RNNs process sequences sequentially, which can hinder the capture of long-range dependencies due to issues
+like vanishing gradients. The attention mechanism addresses this by allowing models to weigh the relevance of different parts
+of the input sequence when generating each part of the output.
+
+In the context of Transformers, the **self-attention** mechanism computes a representation of each word in a sequence by considering
+the entire sequence, enabling the model to capture context effectively.
+
+### Mathematical Foundation of Self-Attention
+
+Given an input sequence represented by embeddings, the self-attention mechanism operates as follows:
+1. **Linear Projections**: Each input embedding is projected into three vectors: Query(Q), Key(K), and Value(V), using learned weight matrices.
+2. **Attention Scores**: The attention score between two tokens is computed using the scaled dot-product of their $Q$ and $K$ vectors:
+
+$$
+\text{Attention}(Q,K,V)=\text{softmax} (\frac{QK^T}{\sqrt{d_k}}) V
+$$
+
+Here, $d_k$ is the dimension of the key vectors, and the softmax function ensures the attention weights sum to one.
+
+3. **Weighted Sum**: The output is a weighted sum of the Value vectors, where the weights are the attention scores.
+
+This mechanism allows the model to integrate information from the entire sequence, capturing dependencies regardless of their distance.
+
+### Multi-head Attention
+
+To enhance the model's ability to capture different types of relationships, Transformers employ **multi-head attention**.
+This involves running multiple self-attention operations(head) in parallel, each with its own set of projection matrices.
+The outputs of these heads are concatenated and projected to form the final output.
+
+This approach allows the model to attend to information from different representation subspaces, capturing various linguistic features
+such as syntax and semantics simultaneously.
+
+### Advancements in Attention Mechanisms
+
+Recent research has introduced several enhancements to the standard attention mechanism:
+- **Selective Attention**: This technique reduces attention to irrelevant elements, improving model performance and efficiency without adding parameters.
+- **Mixture-of-Head Attention (MoH)**: MoH treats attention heads as experts, allowing the model to dynamically select and weight heads based on their relevance, leading to improve performance with fewer resources.
+- **Dynamically Composable Multi-Head Attention (DCMHA)**: DCMHA addresses redundancy in attention heads by dynamically composing them, enhancing the model's expressive power while being computationally efficient.
+
+### Selective Attention
+
+[Paper](https://arxiv.org/abs/2410.02703)
+
+**Motivation**
+
+Traditional self-attention mechanisms assign attention weights to all tokens in the context, regardless of their relevance.
+This can lead to performance degradation due to the inclusion of unneeded elements. The authors introduce Selective Attention,
+a parameter-free modification to the standard attention mechanism, aiming to reduce attention to irrelevant tokens and enhance model efficiency.
+
+**Mathematical Formulation**
+
+Selective Attention modifies original self-attention by introducing a mechanism to reduce attention to tokens deemed unneeded.
+The approach involves adjusting the attention weights to diminish the influence of less relevant tokens, effectively sparsifying the attention distribution without adding parameters.
+
+### Mixture-of-Head Attention
+
+[Paper](https://arxiv.org/abs/2410.11842)
+
+**Motivation**
+
+In standard MHA, all attention heads contribute equally to the final output, which may not be optimal as not all heads are equally
+informative. MoH treats attention heads as experts in a Mixture-of-Experts framework, allowing each token to select the most
+relevant heads dynamically, enhancing efficiency and performance.
+
+**Mathematical Formulation**
+
+Standard MHA computes the output as:
+
+$$
+\text{MHA}(Q, K, V) = \text{Concat}(\text{head}_1, \ldots , \text{head}_h) W^{O}
+$$
+
+where each head is:
+
+$$
+\text{head}_i = \text{Attention}(Q W_i^Q, K W_i^K, V W_i^V)
+$$
+
+MoH modifies this by introducing a routing mechanism that assigns weights to each head based on their relevance to the token:
+
+$$
+\text{MoH}(Q, K, V) = \Sigma_{i=1}^{h} \alpha_i \cdot \text{head}_i
+$$
+
+where $\alpha_i$ is the routing weight for head $i$, determined dynamically for each token.
+
+### Dynamically Composable Multi-Head Attention (DCMHA)
+
+[Paper](https://arxiv.org/abs/2405.08553)
+
+**Motivation**
+
+Standard MHA treats attention heads as independent entities, leading to potential redundancy and limited expressiveness.
+DCMHA addresses this by dynamically composing attention heads based on the input, enhancing the model's capacity to capture complex patterns without increasing parameters.
+
+**Mathematical Formulation**
+
+DCMHA introduces a composition function $\mathit{Compose}$ that transforms the attention score and weights matrices in an input-dependent manner:
+
+$$
+\text{DCMHA}(Q, K, V) = \mathit{Compose}(\{ \text{head} \}_{i=1}^{h})
+$$
+
+This function dynamically combines the outputs of different heads, allowing for richer representations. The exact formulation of
+$\mathit{Compose}$ is designed to be parameter and computation efficient.
+
+## Advanced Prompting Techniques for LLMs
+
+### Introduction
+
+As LLMs continue to evolve, the art of prompting has become pivotal in harnessing their full potential. Beyond basic zero-shot and few-shot
+prompting, a plethora of advanced techniques have emerged, enabling more nuanced and effective interactions with LLMs.
+
+### Chain-of-Thought Prompting
+
+CoT encourages LLMs to generate intermediate reasoning steps, enhancing performance on complex tasks such as arithmetic, logic, and common-sense reasoning.
+
+**Example**
+- Question: If a train travels at 60 km/h for 2 hours, how far does it go?
+- CoT Prompt: Let's think step by step. The train travels at 60 km/h for 2 hours. $\text{distance} = \text{time} \times \text{speed} = 60 \times 2 = 120$
+
+**Implementations**
+1. Identify the task: Select tasks that benefit from step-by-step reasoning
+2. Craft the prompt: Include phrases like 'let's think step by step'
+3. Provide examples: For few-shot learning, supply examples with detailed reasoning.
+
+### Self-Consistency Prompting
+
+It involves generating multiple reasoning paths and selecting the most consistent answer, reducing variability and enhancing reliability.
+
+**Example**
+- Prompt: "When I was 6, my sister was half my age. Now I'm 70, how old is my sister?"
+- Response 1: "The age difference is 3 years. If I'm 70, my sister is 67."
+- Response 2: "At age 6, sister was 3. Difference is 3 years. Now at 70, sister is 67."
+- Response 3: "We are 3 years apart. So, sister is 67."
+- Final Answer: "67" (Consistent across responses)
+
+**Implementations**
+1. Create a Specific Prompt: Ensure the prompt is clear and encourages detailed reasoning.
+2. Generate Multiple Responses: Use an LLM to produce several outputs for the same prompt.
+3. Analyze Responses: Compare the answers to identify the most consistent one.
+
+### Tree-of-Thoughts Prompting
+
+ToT prompting structures the reasoning process as a tree, exploring multiple reasoning paths and evaluating them to find the optimal solution.
+
+**Example**
+- Prompt: Imagine three different experts are solving this problem. Each expert will write down one step of their reasoning, then share it with the group. Then all experts will proceed to the next step, and so on. If any expert realizes they're on the wrong path, they will withdraw. The problem is: Using the numbers 4, 7, 8, and 8, combine them with any operations to reach 24.
+
+**Implementations**
+1. Decompose the Problem: Break down the task into smaller sub-tasks.
+2. Generate Thoughts: At each step, generate multiple possible continuations.
+3. Evaluate Paths: Assess the validity and usefulness of each path.
+4. Select Optimal Path: Choose the path leading to the best solution.
+
+### ReAct (Reasoning and Acting) Prompting
+
+ReAct prompting integrates reasoning and action by allowing LLMs to interleave thought processes with actions, such as querying a tool or database.
+
+**Example**
+- Question: What's the capital of France?
+- → Thought: I need to recall the capital city of France.
+- → Action: Search for 'capital of France'.
+- → Observation: The capital of France is Paris.
+- → Answer: Paris
+
+**Implementations**
+1. Define Actions: Specify the actions the model can take (e.g., search, calculate).
+2. Structure Prompt: Use a format that alternates between 'Thought', 'Action', and 'Observation'.
+3. Integrate Tools: Connect the model to external tools or APIs for executing actions.
+4. Iterate Reasoning: Allow the model to refine its reasoning based on observations.
+
+### Plan-and-Solve Prompting
+
+This approach separates the planning and execution phases, prompting the model first to devise a plan and then to execute it, improving accuracy in complex tasks.
+
+**Example**
+- Question: If a train travels at 60 mph for 2 hours, how far does it go?
+- Plan: Use the formula distance = speed × time.
+- Solution: 60 mph × 2 hours = 120 miles.
+- Answer: 120 miles.
+
+**Implementations**
+1. Prompt for Plan: Ask the model to outline a plan before solving.
+2. Review Plan: Optionally, assess the plan for correctness.
+3. Execute Plan: Prompt the model to carry out the plan step by step.
+4. Provide Answer: Conclude with the final answer based on the executed plan.
+
+### Retrieval-Augmented Generation (RAG)
+
+RAG combines LLMs with external knowledge sources, retrieving relevant documents to ground responses in factual information.
+
+**Implementations**
+1. Index Documents: Create a searchable index of relevant documents.
+2. Embed Queries: Convert user queries into vector representations.
+3. Retrieve Relevant Docs: Find documents similar to the query vector.
+4. Generate Response: Use the retrieved documents as context for the LLM to generate an informed answer.
+
+**As RAG is so popular these days, I will address this technique later.**
+
+### Role Prompting
+
+Assigning a specific role or persona to the LLM to guide its responses, enhancing relevance and coherence in context-specific tasks.
+
+**Example**
+- You are a financial advisor. Provide investment advice for a risk-averse client.
+
+**Implementations**
+1. Define Role: Clearly specify the role the model should assume.
+2. Craft Prompt: Include the role in the prompt to set context.
