@@ -49,16 +49,7 @@ Within weeks, Merriam-Webster added an entry describing vibe coding as telling a
 
 #### How these tools work internally
 
-```mermaid
-flowchart LR
-  U[User] --> P[Prompt / Spec]
-  P --> A[Agent]
-  A <---> T[Tools via MCP\nfiles, search, commands]
-  A --> M[Model]
-  M --> A --> D[Drafts: code/tests/docs]
-  D --> R[Review & CI]
-  R -->|iterate| P
-```
+![Agentic loop diagram](/blog/2025-10-19-vibe-coding-internal-flow.svg)
 
 - **MCP (Model Context Protocol)** is an open standard for secure two-way connections between AI apps and tools/data—"USB-C for AI."
 - **Gemini CLI** explicitly documents a ReAct loop and MCP server integrations for acting on your repo and environment.
