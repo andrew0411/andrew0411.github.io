@@ -2,7 +2,7 @@
 import SeoHead from '../components/SeoHead.astro';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
-import '../styles/global.css';  // 전역 CSS 임포트
+import '../styles/global.css';
 
 interface Props {
   title?: string;
@@ -17,11 +17,12 @@ const { title, description, url } = Astro.props;
 <html lang="en" data-theme="light">
   <head>
     <SeoHead title={title} description={description} url={url} />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
   </head>
   <body>
     <Navbar />
     <main>
-      <slot />   <!-- 개별 페이지 콘텐츠가 삽입될 자리 -->
+      <slot />
     </main>
     <Footer />
   </body>

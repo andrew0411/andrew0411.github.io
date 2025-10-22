@@ -6,13 +6,19 @@ import rehypeKatex from 'rehype-katex';
 
 export default defineConfig({
   site: 'https://andrew0411.github.io',
-  integrations: [mdx(), sitemap()],// MDX와 Sitemap 통합 활성화
+  integrations: [
+    mdx({
+      remarkPlugins: [remarkMath],
+      rehypePlugins: [rehypeKatex],
+    }),
+    sitemap()
+  ],
   markdown: {
     remarkPlugins: [remarkMath],
     rehypePlugins: [rehypeKatex],
     shikiConfig: {
-      theme: 'github-dark', // 코드 하이라이트 테마
-      wrap: true           // 긴 코드 줄 바닥글 처리
+      theme: 'github-dark',
+      wrap: true
     }
   }
 });
