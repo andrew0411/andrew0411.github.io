@@ -29,14 +29,15 @@ the entire sequence, enabling the model to capture context effectively.
 ### Mathematical Foundation of Self-Attention
 
 Given an input sequence represented by embeddings, the self-attention mechanism operates as follows:
-1. **Linear Projections**: Each input embedding is projected into three vectors: Query(Q), Key(K), and Value(V), using learned weight matrices.
-2. **Attention Scores**: The attention score between two tokens is computed using the scaled dot-product of their $Q$ and $K$ vectors:
 
-$$
-\text{Attention}(Q,K,V)=\text{softmax} (\frac{QK^T}{\sqrt{d_k}}) V
-$$
+1. **Linear Projections**: Each input embedding is projected into three vectors: Query (Q), Key (K), and Value (V), using learned weight matrices.
+2. **Attention Scores**: The attention score between two tokens is computed using the scaled dot-product of their \(Q\) and \(K\) vectors:
 
-Here, $d_k$ is the dimension of the key vectors, and the softmax function ensures the attention weights sum to one.
+\[
+\text{Attention}(Q,K,V) = \operatorname{softmax}\!\left(\frac{QK^{\top}}{\sqrt{d_k}}\right) V
+\]
+
+Here, \(d_k\) is the dimension of the key vectors, and the softmax function ensures the attention weights sum to one.
 
 3. **Weighted Sum**: The output is a weighted sum of the Value vectors, where the weights are the attention scores.
 
@@ -45,17 +46,25 @@ This mechanism allows the model to integrate information from the entire sequenc
 ### Multi-head Attention
 
 To enhance the model's ability to capture different types of relationships, Transformers employ **multi-head attention**.
-This involves running multiple self-attention operations(head) in parallel, each with its own set of projection matrices.
+This involves running multiple self-attention operations (heads) in parallel, each with its own set of projection matrices.
 The outputs of these heads are concatenated and projected to form the final output.
 
 This approach allows the model to attend to information from different representation subspaces, capturing various linguistic features
 such as syntax and semantics simultaneously.
 
+Formally,
+
+\[
+\text{MHA}(Q,K,V) = \operatorname{Concat}\big(\text{head}_1,\ldots,\text{head}_h\big)\, W^{O},
+\qquad
+\text{head}_i = \text{Attention}\big(Q W_i^{Q},\, K W_i^{K},\, V W_i^{V}\big).
+\]
+
 ### Advancements in Attention Mechanisms
 
 Recent research has introduced several enhancements to the standard attention mechanism:
 - **Selective Attention**: This technique reduces attention to irrelevant elements, improving model performance and efficiency without adding parameters.
-- **Mixture-of-Head Attention (MoH)**: MoH treats attention heads as experts, allowing the model to dynamically select and weight heads based on their relevance, leading to improve performance with fewer resources.
+- **Mixture-of-Head Attention (MoH)**: MoH treats attention heads as experts, allowing the model to dynamically select and weight heads based on their relevance, leading to improved performance with fewer resources.
 - **Dynamically Composable Multi-Head Attention (DCMHA)**: DCMHA addresses redundancy in attention heads by dynamically composing them, enhancing the model's expressive power while being computationally efficient.
 
 ### Selective Attention
@@ -85,25 +94,24 @@ relevant heads dynamically, enhancing efficiency and performance.
 
 **Mathematical Formulation**
 
-Standard MHA computes the output as:
+A dimensionally consistent formulation of MoH is to apply per-head routing weights before concatenation (“weighted-concat”), then project:
 
-$$
-\text{MHA}(Q, K, V) = \text{Concat}(\text{head}_1, \ldots , \text{head}_h) W^{O}
-$$
+\[
+\text{MoH}(Q,K,V)
+= \operatorname{Concat}\big(\alpha_1\,\text{head}_1,\ldots,\alpha_h\,\text{head}_h\big)\, W^{O},
+\quad \text{with } \alpha_i \ge 0,\ \sum_{i=1}^{h}\alpha_i = 1.
+\]
 
-where each head is:
+(대안) head별로 출력 투영 후 가중합을 취하는 형태도 널리 쓰입니다:
 
-$$
-\text{head}_i = \text{Attention}(Q W_i^Q, K W_i^K, V W_i^V)
-$$
+\[
+\text{MoH}(Q,K,V)
+= \sum_{i=1}^{h} \alpha_i \,\big(\text{head}_i\, W_i^{O}\big),
+\]
 
-MoH modifies this by introducing a routing mechanism that assigns weights to each head based on their relevance to the token:
-
-$$
-\text{MoH}(Q, K, V) = \Sigma_{i=1}^{h} \alpha_i \cdot \text{head}_i
-$$
-
-where $\alpha_i$ is the routing weight for head $i$, determined dynamically for each token.
+여기서 \(\alpha_i\)는 토큰별로 동적으로 결정되는 라우팅 가중치입니다.
+> **수정 사항**: 기존 문서의 \(\Sigma\)는 합 기호가 아니므로 \(\sum\)으로 교정했고, 단순 \(\sum_i \alpha_i\,\text{head}_i\)는
+기본 MHA의 출력 차원(\(d_{\text{model}}\))과 불일치할 수 있어 위 두 식 중 하나로 정식화했습니다.
 
 ### Dynamically Composable Multi-Head Attention (DCMHA)
 
@@ -116,14 +124,14 @@ DCMHA addresses this by dynamically composing attention heads based on the input
 
 **Mathematical Formulation**
 
-DCMHA introduces a composition function $\mathit{Compose}$ that transforms the attention score and weights matrices in an input-dependent manner:
+DCMHA introduces a composition function \(\mathit{Compose}\) that transforms the attention score and weights matrices in an input-dependent manner:
 
-$$
-\text{DCMHA}(Q, K, V) = \mathit{Compose}(\{ \text{head} \}_{i=1}^{h})
-$$
+\[
+\text{DCMHA}(Q,K,V) = \mathit{Compose}\!\left(\{\text{head}_i\}_{i=1}^{h}\right).
+\]
 
 This function dynamically combines the outputs of different heads, allowing for richer representations. The exact formulation of
-$\mathit{Compose}$ is designed to be parameter and computation efficient.
+\(\mathit{Compose}\) is designed to be parameter and computation efficient.
 
 ## Advanced Prompting Techniques for LLMs
 
@@ -138,7 +146,7 @@ CoT encourages LLMs to generate intermediate reasoning steps, enhancing performa
 
 **Example**
 - Question: If a train travels at 60 km/h for 2 hours, how far does it go?
-- CoT Prompt: Let's think step by step. The train travels at 60 km/h for 2 hours. $\text{distance} = \text{time} \times \text{speed} = 60 \times 2 = 120$
+- CoT Prompt: Let's think step by step. The train travels at 60 km/h for 2 hours. \(\text{distance} = \text{time} \times \text{speed} = 60 \times 2 = 120\).
 
 **Implementations**
 1. Identify the task: Select tasks that benefit from step-by-step reasoning
