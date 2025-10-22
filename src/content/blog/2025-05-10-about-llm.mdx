@@ -31,13 +31,13 @@ the entire sequence, enabling the model to capture context effectively.
 Given an input sequence represented by embeddings, the self-attention mechanism operates as follows:
 
 1. **Linear Projections**: Each input embedding is projected into three vectors: Query (Q), Key (K), and Value (V), using learned weight matrices.
-2. **Attention Scores**: The attention score between two tokens is computed using the scaled dot-product of their \(Q\) and \(K\) vectors:
+2. **Attention Scores**: The attention score between two tokens is computed using the scaled dot-product of their $Q$ and $K$ vectors:
 
 $$
 \text{Attention}(Q,K,V) = \operatorname{softmax}\!\left(\frac{QK^{\top}}{\sqrt{d_k}}\right) V
 $$
 
-Here, \(d_k\) is the dimension of the key vectors, and the softmax function ensures the attention weights sum to one.
+Here, $d_k$ is the dimension of the key vectors, and the softmax function ensures the attention weights sum to one.
 
 3. **Weighted Sum**: The output is a weighted sum of the Value vectors, where the weights are the attention scores.
 
@@ -93,7 +93,7 @@ MoH treats attention heads as experts in a Mixture-of-Experts framework, allowin
 
 **Mathematical Formulation**
 
-A dimensionally consistent formulation of MoH is to apply per-head routing weights before concatenation (“weighted-concat”), then project:
+A dimensionally consistent formulation of MoH is to apply per-head routing weights before concatenation (weighted-concat), then project:
 
 $$
 \text{MoH}(Q,K,V)
@@ -101,17 +101,16 @@ $$
 \quad \text{with } \alpha_i \ge 0,\ \sum_{i=1}^{h}\alpha_i = 1.
 $$
 
-(대안) head별로 출력 투영 후 가중합을 취하는 형태도 널리 쓰입니다:
+**Alternative formulation**: Head-wise output projection followed by weighted sum is also commonly used:
 
 $$
 \text{MoH}(Q,K,V)
 = \sum_{i=1}^{h} \alpha_i \,\big(\text{head}_i\, W_i^{O}\big),
 $$
 
-여기서 \(\alpha_i\)는 토큰별로 동적으로 결정되는 라우팅 가중치입니다.
+where $\alpha_i$ represents token-wise dynamically determined routing weights.
 
-> **수정 사항**: 기존 문서의 \(\Sigma\)는 합 기호가 아니므로 \(\sum\)으로 교정했고, 단순 \(\sum_i \alpha_i\,\text{head}_i\)는
-기본 MHA의 출력 차원(\(d_{\text{model}}\))과 불일치할 수 있어 위 두 식 중 하나로 정식화했습니다.
+> **Note**: The original document's sigma symbol was corrected to the summation operator. The simple form of summing weighted heads may cause dimensional mismatch with the standard MHA output dimension, so one of the above two formulations is recommended.
 
 ### Dynamically Composable Multi-Head Attention (DCMHA)
 
@@ -124,14 +123,13 @@ DCMHA addresses this by dynamically composing attention heads based on the input
 
 **Mathematical Formulation**
 
-DCMHA introduces a composition function \(\mathit{Compose}\) that transforms the attention score and weights matrices in an input-dependent manner:
+DCMHA introduces a composition function that transforms the attention score and weights matrices in an input-dependent manner:
 
 $$
-\text{DCMHA}(Q,K,V) = \mathit{Compose}\!\left(\{\text{head}_i\}_{i=1}^{h}\right).
+\text{DCMHA}(Q,K,V) = \mathit{Compose}\!\left(\lbrace\text{head}_i\rbrace_{i=1}^{h}\right).
 $$
 
-This function dynamically combines the outputs of different heads, allowing for richer representations. The exact formulation of
-\(\mathit{Compose}\) is designed to be parameter and computation efficient.
+This function dynamically combines the outputs of different heads, allowing for richer representations. The exact formulation of the compose function is designed to be parameter and computation efficient.
 
 ## Advanced Prompting Techniques for LLMs
 
@@ -145,7 +143,7 @@ CoT encourages LLMs to generate intermediate reasoning steps, enhancing performa
 
 **Example**
 - Question: If a train travels at 60 km/h for 2 hours, how far does it go?
-- CoT Prompt: Let's think step by step. The train travels at 60 km/h for 2 hours. \(\text{distance} = \text{time} \times \text{speed} = 60 \times 2 = 120\).
+- CoT Prompt: Let's think step by step. The train travels at 60 km/h for 2 hours. distance = time × speed = 60 × 2 = 120.
 
 **Implementations**
 1. Identify the task: Select tasks that benefit from step-by-step reasoning
@@ -187,10 +185,10 @@ ReAct prompting integrates reasoning and action by allowing LLMs to interleave t
 
 **Example**
 - Question: What's the capital of France?
-- → Thought: I need to recall the capital city of France.
-- → Action: Search for 'capital of France'.
-- → Observation: The capital of France is Paris.
-- → Answer: Paris
+- Thought: I need to recall the capital city of France.
+- Action: Search for 'capital of France'.
+- Observation: The capital of France is Paris.
+- Answer: Paris
 
 **Implementations**
 1. Define Actions: Specify the actions the model can take (e.g., search, calculate).
