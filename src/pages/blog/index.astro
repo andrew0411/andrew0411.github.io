@@ -68,7 +68,7 @@ const paginated = paginate(allPosts, currentPage, 6);
   .hero {
     position: relative;
     height: 300px;
-    background: linear-gradient(135deg, var(--color-primary) 0%, #8b5cf6 100%);
+    background: linear-gradient(135deg, #f5e6d3 0%, #faf3e8 50%, #e8dcc8 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -76,15 +76,16 @@ const paginated = paginate(allPosts, currentPage, 6);
   }
   .hero-content {
     text-align: center;
-    color: white;
+    color: #6b5d4f;
   }
   .hero h1 {
     font-size: 3rem;
     margin-bottom: 0.5rem;
+    font-weight: 700;
   }
   .hero p {
     font-size: 1.25rem;
-    opacity: 0.9;
+    opacity: 0.85;
   }
   .category-bar {
     display: flex;
@@ -104,9 +105,9 @@ const paginated = paginate(allPosts, currentPage, 6);
     color: var(--color-text);
   }
   .category-link:hover {
-    background-color: var(--color-primary);
+    background-color: #d4b5a0;
     color: white;
-    border-color: var(--color-primary);
+    border-color: #d4b5a0;
   }
   .posts-section {
     padding: 2rem;
