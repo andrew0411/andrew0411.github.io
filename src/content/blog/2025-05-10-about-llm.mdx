@@ -88,9 +88,8 @@ The approach involves adjusting the attention weights to diminish the influence 
 
 **Motivation**
 
-In standard MHA, all attention heads contribute equally to the final output, which may not be optimal as not all heads are equally
-informative. MoH treats attention heads as experts in a Mixture-of-Experts framework, allowing each token to select the most
-relevant heads dynamically, enhancing efficiency and performance.
+In standard MHA, all attention heads contribute equally to the final output, which may not be optimal as not all heads are equally informative.
+MoH treats attention heads as experts in a Mixture-of-Experts framework, allowing each token to select the most relevant heads dynamically, enhancing efficiency and performance.
 
 **Mathematical Formulation**
 
@@ -110,6 +109,7 @@ $$
 $$
 
 여기서 \(\alpha_i\)는 토큰별로 동적으로 결정되는 라우팅 가중치입니다.
+
 > **수정 사항**: 기존 문서의 \(\Sigma\)는 합 기호가 아니므로 \(\sum\)으로 교정했고, 단순 \(\sum_i \alpha_i\,\text{head}_i\)는
 기본 MHA의 출력 차원(\(d_{\text{model}}\))과 불일치할 수 있어 위 두 식 중 하나로 정식화했습니다.
 
@@ -137,8 +137,7 @@ This function dynamically combines the outputs of different heads, allowing for 
 
 ### Introduction
 
-As LLMs continue to evolve, the art of prompting has become pivotal in harnessing their full potential. Beyond basic zero-shot and few-shot
-prompting, a plethora of advanced techniques have emerged, enabling more nuanced and effective interactions with LLMs.
+As LLMs continue to evolve, the art of prompting has become pivotal in harnessing their full potential. Beyond basic zero-shot and few-shot prompting, a plethora of advanced techniques have emerged, enabling more nuanced and effective interactions with LLMs.
 
 ### Chain-of-Thought Prompting
 
@@ -237,4 +236,3 @@ Assigning a specific role or persona to the LLM to guide its responses, enhancin
 **Implementations**
 1. Define Role: Clearly specify the role the model should assume.
 2. Craft Prompt: Include the role in the prompt to set context.
-
