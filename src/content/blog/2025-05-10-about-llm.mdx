@@ -33,9 +33,9 @@ Given an input sequence represented by embeddings, the self-attention mechanism 
 1. **Linear Projections**: Each input embedding is projected into three vectors: Query (Q), Key (K), and Value (V), using learned weight matrices.
 2. **Attention Scores**: The attention score between two tokens is computed using the scaled dot-product of their \(Q\) and \(K\) vectors:
 
-\[
+$$
 \text{Attention}(Q,K,V) = \operatorname{softmax}\!\left(\frac{QK^{\top}}{\sqrt{d_k}}\right) V
-\]
+$$
 
 Here, \(d_k\) is the dimension of the key vectors, and the softmax function ensures the attention weights sum to one.
 
@@ -54,11 +54,11 @@ such as syntax and semantics simultaneously.
 
 Formally,
 
-\[
+$$
 \text{MHA}(Q,K,V) = \operatorname{Concat}\big(\text{head}_1,\ldots,\text{head}_h\big)\, W^{O},
 \qquad
 \text{head}_i = \text{Attention}\big(Q W_i^{Q},\, K W_i^{K},\, V W_i^{V}\big).
-\]
+$$
 
 ### Advancements in Attention Mechanisms
 
@@ -96,18 +96,18 @@ relevant heads dynamically, enhancing efficiency and performance.
 
 A dimensionally consistent formulation of MoH is to apply per-head routing weights before concatenation (“weighted-concat”), then project:
 
-\[
+$$
 \text{MoH}(Q,K,V)
 = \operatorname{Concat}\big(\alpha_1\,\text{head}_1,\ldots,\alpha_h\,\text{head}_h\big)\, W^{O},
 \quad \text{with } \alpha_i \ge 0,\ \sum_{i=1}^{h}\alpha_i = 1.
-\]
+$$
 
 (대안) head별로 출력 투영 후 가중합을 취하는 형태도 널리 쓰입니다:
 
-\[
+$$
 \text{MoH}(Q,K,V)
 = \sum_{i=1}^{h} \alpha_i \,\big(\text{head}_i\, W_i^{O}\big),
-\]
+$$
 
 여기서 \(\alpha_i\)는 토큰별로 동적으로 결정되는 라우팅 가중치입니다.
 > **수정 사항**: 기존 문서의 \(\Sigma\)는 합 기호가 아니므로 \(\sum\)으로 교정했고, 단순 \(\sum_i \alpha_i\,\text{head}_i\)는
@@ -126,9 +126,9 @@ DCMHA addresses this by dynamically composing attention heads based on the input
 
 DCMHA introduces a composition function \(\mathit{Compose}\) that transforms the attention score and weights matrices in an input-dependent manner:
 
-\[
+$$
 \text{DCMHA}(Q,K,V) = \mathit{Compose}\!\left(\{\text{head}_i\}_{i=1}^{h}\right).
-\]
+$$
 
 This function dynamically combines the outputs of different heads, allowing for richer representations. The exact formulation of
 \(\mathit{Compose}\) is designed to be parameter and computation efficient.
