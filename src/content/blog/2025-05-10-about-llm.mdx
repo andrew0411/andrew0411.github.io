@@ -31,13 +31,13 @@ the entire sequence, enabling the model to capture context effectively.
 Given an input sequence represented by embeddings, the self-attention mechanism operates as follows:
 
 1. **Linear Projections**: Each input embedding is projected into three vectors: Query (Q), Key (K), and Value (V), using learned weight matrices.
-2. **Attention Scores**: The attention score between two tokens is computed using the scaled dot-product of their $Q$ and $K$ vectors:
+2. **Attention Scores**: The attention score between two tokens is computed using the scaled dot-product of their `Q` and `K` vectors:
 
 $$
 \text{Attention}(Q,K,V) = \operatorname{softmax}\!\left(\frac{QK^{\top}}{\sqrt{d_k}}\right) V
 $$
 
-Here, $d_k$ is the dimension of the key vectors, and the softmax function ensures the attention weights sum to one.
+Here, `d_k` is the dimension of the key vectors, and the softmax function ensures the attention weights sum to one.
 
 3. **Weighted Sum**: The output is a weighted sum of the Value vectors, where the weights are the attention scores.
 
@@ -108,7 +108,7 @@ $$
 = \sum_{i=1}^{h} \alpha_i \,\big(\text{head}_i\, W_i^{O}\big),
 $$
 
-where $\alpha_i$ represents token-wise dynamically determined routing weights.
+where `α_i` represents token-wise dynamically determined routing weights.
 
 > **Note**: The original document's sigma symbol was corrected to the summation operator. The simple form of summing weighted heads may cause dimensional mismatch with the standard MHA output dimension, so one of the above two formulations is recommended.
 
