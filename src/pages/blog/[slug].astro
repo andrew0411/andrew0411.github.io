@@ -1,7 +1,8 @@
 ---
-import { getAllPosts } from '../../lib/content';
+import { getAllPosts, getPostsGroupedByTagInCategory } from '../../lib/content';
 import { render } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
+import { categories } from '../../config/categories';
 
 export async function getStaticPaths() {
   const allPosts = await getAllPosts();
@@ -18,8 +19,11 @@ const post = allPosts[index];
 const prevPost = index < allPosts.length - 1 ? { slug: allPosts[index + 1].slug, title: allPosts[index + 1].data.title } : null;
 const nextPost = index > 0 ? { slug: allPosts[index - 1].slug, title: allPosts[index - 1].data.title } : null;
 const { Content } = await render(post);
+
+const taggedPosts = await getPostsGroupedByTagInCategory(post.data.category);
+const categoryName = categories.find(c => c.id === post.data.category)?.name || post.data.category;
 ---
 
-<BlogPost post={post} prevPost={prevPost} nextPost={nextPost}>
+<BlogPost post={post} prevPost={prevPost} nextPost={nextPost} taggedPosts={taggedPosts} categoryName={categoryName}>
   <Content />
 </BlogPost>

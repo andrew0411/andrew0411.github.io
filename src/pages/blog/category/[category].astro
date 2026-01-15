@@ -22,6 +22,35 @@ const categoryName = categories.find(c => c.id === category)?.name || category;
 
 <BaseLayout title={`Category: ${categoryName}`}>
   <div class="category-page">
+    <aside class="sidebar">
+      <section class="sidebar-section">
+        <h3>Categories</h3>
+        <ul>
+          {categories.map(cat => (
+            <li>
+              <a
+                href={`/blog/category/${cat.id}`}
+                class:list={['category-link', { active: cat.id === category }]}
+              >
+                {cat.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {categoryTags.length > 0 && (
+        <section class="sidebar-section">
+          <h3>Tags in {categoryName}</h3>
+          <div class="tag-cloud">
+            {categoryTags.map(tag => (
+              <a href={`/blog/tag/${tag}`} class="tag">#{tag}</a>
+            ))}
+          </div>
+        </section>
+      )}
+    </aside>
+
     <div class="main-content">
       <header class="page-header">
         <h1>Category: {categoryName}</h1>
@@ -54,35 +83,6 @@ const categoryName = categories.find(c => c.id === category)?.name || category;
         buildHref={(p) => `/blog/category/${category}?page=${p}`}
       />
     </div>
-
-    <aside class="sidebar">
-      <section class="sidebar-section">
-        <h3>Categories</h3>
-        <ul>
-          {categories.map(cat => (
-            <li>
-              <a
-                href={`/blog/category/${cat.id}`}
-                class:list={['category-link', { active: cat.id === category }]}
-              >
-                {cat.name}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {categoryTags.length > 0 && (
-        <section class="sidebar-section">
-          <h3>Tags in {categoryName}</h3>
-          <div class="tag-cloud">
-            {categoryTags.map(tag => (
-              <a href={`/blog/tag/${tag}`} class="tag">#{tag}</a>
-            ))}
-          </div>
-        </section>
-      )}
-    </aside>
   </div>
 </BaseLayout>
 
@@ -92,7 +92,7 @@ const categoryName = categories.find(c => c.id === category)?.name || category;
     margin: 2rem auto;
     padding: 0 2rem;
     display: grid;
-    grid-template-columns: 1fr 300px;
+    grid-template-columns: 300px 1fr;
     gap: 3rem;
   }
   .page-header {

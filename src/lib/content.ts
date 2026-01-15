@@ -35,6 +35,24 @@ export async function getUniqueTagsInCategory(category: string): Promise<string[
   return [...new Set(tags)].sort();
 }
 
+// 특정 카테고리 내 태그별 게시글 목록 (알파벳순 정렬)
+export async function getPostsGroupedByTagInCategory(category: string): Promise<Map<string, { slug: string; title: string }[]>> {
+  const posts = await getPostsByCategory(category);
+  const tags = await getUniqueTagsInCategory(category);
+
+  const grouped = new Map<string, { slug: string; title: string }[]>();
+
+  for (const tag of tags) {
+    const postsWithTag = posts
+      .filter(post => post.data.tags.includes(tag))
+      .map(post => ({ slug: post.slug, title: post.data.title }))
+      .sort((a, b) => a.title.localeCompare(b.title));
+    grouped.set(tag, postsWithTag);
+  }
+
+  return grouped;
+}
+
 // 배열 아이템을 페이지네이션하여 잘라내는 함수
 export function paginate<T>(
   items: T[],

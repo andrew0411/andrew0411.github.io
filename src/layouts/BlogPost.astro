@@ -1,64 +1,83 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import PostSidebar from '../components/PostSidebar.astro';
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
   post: CollectionEntry<'blog'>;
   prevPost?: { slug: string; title: string } | null;
   nextPost?: { slug: string; title: string } | null;
+  taggedPosts: Map<string, { slug: string; title: string }[]>;
+  categoryName: string;
 }
 
-const { post, prevPost, nextPost } = Astro.props;
+const { post, prevPost, nextPost, taggedPosts, categoryName } = Astro.props;
 const { title, date, category, tags, summary } = post.data;
 const formattedDate = date.toISOString().split('T')[0];
 ---
 
 <BaseLayout title={title} description={summary}>
-  <article class="blog-post">
-    <header class="post-header">
-      <h1>{title}</h1>
-      <div class="post-meta">
-        <time datetime={date.toISOString()}>{formattedDate}</time>
-        <a href={`/blog/category/${category}`} class="category">{category}</a>
-      </div>
-      {tags.length > 0 && (
-        <div class="post-tags">
-          {tags.map(tag => (
-            <a href={`/blog/tag/${tag}`} class="tag">#{tag}</a>
-          ))}
+  <div class="blog-post-container">
+    <PostSidebar
+      taggedPosts={taggedPosts}
+      currentSlug={post.slug}
+      categoryName={categoryName}
+    />
+
+    <article class="blog-post">
+      <header class="post-header">
+        <h1>{title}</h1>
+        <div class="post-meta">
+          <time datetime={date.toISOString()}>{formattedDate}</time>
+          <a href={`/blog/category/${category}`} class="category">{category}</a>
         </div>
-      )}
-    </header>
-
-    <div class="prose">
-      <slot />   <!-- 글 본문 내용이 여기 들어감 -->
-    </div>
-
-    <nav class="post-navigation">
-      <div class="nav-item">
-        {prevPost && (
-          <>
-            <span class="nav-label">← Previous</span><br/>
-            <a href={`/blog/${prevPost.slug}`}>{prevPost.title}</a>
-          </>
+        {tags.length > 0 && (
+          <div class="post-tags">
+            {tags.map(tag => (
+              <a href={`/blog/tag/${tag}`} class="tag">#{tag}</a>
+            ))}
+          </div>
         )}
+      </header>
+
+      <div class="prose">
+        <slot />
       </div>
-      <div class="nav-item">
-        {nextPost && (
-          <>
-            <span class="nav-label">Next →</span><br/>
-            <a href={`/blog/${nextPost.slug}`}>{nextPost.title}</a>
-          </>
-        )}
-      </div>
-    </nav>
-  </article>
+
+      <nav class="post-navigation">
+        <div class="nav-item">
+          {prevPost && (
+            <>
+              <span class="nav-label">← Previous</span><br/>
+              <a href={`/blog/${prevPost.slug}`}>{prevPost.title}</a>
+            </>
+          )}
+        </div>
+        <div class="nav-item">
+          {nextPost && (
+            <>
+              <span class="nav-label">Next →</span><br/>
+              <a href={`/blog/${nextPost.slug}`}>{nextPost.title}</a>
+            </>
+          )}
+        </div>
+      </nav>
+    </article>
+  </div>
 </BaseLayout>
 
 <style>
+  .blog-post-container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 3rem;
+  }
+
   .blog-post {
     max-width: 860px;
-    margin: 2rem auto;
     padding: 0 1rem;
   }
   .post-header {
@@ -119,6 +138,13 @@ const formattedDate = date.toISOString().split('T')[0];
     text-decoration: none;
     color: var(--color-text);
   }
+  @media (max-width: 1024px) {
+    .blog-post-container {
+      grid-template-columns: 1fr;
+      padding: 0 1rem;
+    }
+  }
+
   @media (max-width: 768px) {
     h1 {
       font-size: 2rem;
