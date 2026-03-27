@@ -96,6 +96,30 @@ pre code {
   border-radius: 8px;
 }
 
+/* 테이블 스타일 */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  font-size: 0.95em;
+}
+.prose th,
+.prose td {
+  border: 1px solid var(--color-border);
+  padding: 0.75em 1em;
+  text-align: left;
+}
+.prose th {
+  background-color: var(--color-bg-secondary);
+  font-weight: 600;
+}
+.prose tr:hover {
+  background-color: var(--color-bg-secondary);
+}
+.prose table code {
+  font-size: 0.9em;
+}
+
 /* 접근성: 화면 리더 전용 요소 */
 .sr-only {
   position: absolute;

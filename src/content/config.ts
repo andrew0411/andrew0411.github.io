@@ -5,7 +5,7 @@ const blogCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.date(),
-    category: z.enum(['paper-review', 'personal', 'research', 'AI', 'mathematics']),
+    category: z.enum(['paper-review', 'personal', 'research', 'AI', 'mathematics', 'Coursework', 'finance']),
     tags: z.array(z.string()).default([]),
     summary: z.string().optional(),
     thumbnail: z.string().optional(),   // public/ 경로에 있는 이미지 파일 경로
