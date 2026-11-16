@@ -1,0 +1,33 @@
+---
+import type { Citation } from '../data/profile';
+
+interface Props {
+  item: Citation;
+}
+
+const { item } = Astro.props;
+const last = item.authors.length - 1;
+---
+
+<span class="citation">
+  {item.authors.map((a, i) => (
+    <Fragment>
+      {i > 0 && (i === last ? ', and ' : ', ')}
+      {i === item.me ? <strong>{a}</strong> : a}
+    </Fragment>
+  ))}
+  {' '}
+  {item.title}. <em>{item.venue}</em>{item.details && `, ${item.details}`}. {item.date}.
+  {item.note && <span class="note"> ({item.note})</span>}
+  {item.doi && (
+    <Fragment>
+      {' '}<a href={`https://doi.org/${item.doi}`} target="_blank" rel="noopener noreferrer">doi:{item.doi}</a>
+    </Fragment>
+  )}
+</span>
+
+<style>
+  .note {
+    font-weight: 600;
+  }
+</style>

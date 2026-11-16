@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "build": "astro build && npx pagefind --site dist --output-subdir pagefind",
     "preview": "astro preview",
-    "astro:sync": "astro sync"
+    "astro:sync": "astro sync",
+    "cv:pdf": "node scripts/build-cv-pdf.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.7",
