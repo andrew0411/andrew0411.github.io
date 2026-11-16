@@ -8,6 +8,6 @@
 - 검증 정책 L1–L3 신설 (AGENTS.md)
 - Phase 2 검증(L2): `npm run cv:pdf` 빌드 통과, PDF 3쪽 육안 확인, About·Publication·CV를 1280px·375px, light·dark에서 확인. 375px 가로 넘침은 기존 Navbar 원인(Phase 3에서 처리)
 - CV PDF 사본: `R:\phd-hub\10_career\cv\2026-11-16_CV.pdf`
-- 미커밋: Phase 2 변경 전체 + 이전부터 staged된 blog 글 2개 파일
-- Blocker: legacy 폴더 아직 남아 있음
+- 커밋: `ffb0694` (norm-induced distances 글), `fcc61f1` (Phase 2). push 안 함
+- Phase 1 완료: legacy 폴더 삭제 (push 안 된 커밋 0개 재확인 후)
 - 다음: Phase 3 디자인 변경 (L3)
