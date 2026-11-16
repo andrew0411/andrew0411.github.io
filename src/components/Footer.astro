@@ -1,29 +1,44 @@
 ---
-import { siteConfig } from '../config/siteConfig';
+import { profile } from '../data/profile';
 ---
 
-<footer>
-  <div class="footer-container">
-    <p>&copy; {new Date().getFullYear()} {siteConfig.author}. All rights reserved.</p>
-    <p>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></p>
+<footer data-pagefind-ignore="all">
+  <div class="inner">
+    <span>© {new Date().getFullYear()} {profile.name}</span>
+    <span class="links">
+      <a href={`mailto:${profile.email}`}>Email</a>
+      <a href={profile.links.github}>GitHub</a>
+      <a href={profile.links.scholar}>Google Scholar</a>
+      <a href="/rss.xml">RSS</a>
+    </span>
   </div>
 </footer>
 
 <style>
   footer {
     margin-top: 4rem;
-    padding: 2rem 1rem;
-    border-top: 1px solid var(--color-border);
-    text-align: center;
-    color: var(--color-text);
-    opacity: 0.7;
+    padding: 0 1.5rem;
   }
-  .footer-container {
-    max-width: 1200px;
+  .inner {
+    max-width: calc(var(--measure) - 3rem);
     margin: 0 auto;
+    padding: 1.5rem 0 3rem;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.6rem 1rem;
+    color: var(--muted);
+    font-size: 0.85rem;
   }
-  footer p {
-    margin: 0.5rem 0;
-    font-size: 0.9rem;
+  .links {
+    display: flex;
+    gap: 1rem;
+  }
+  .links a {
+    color: var(--muted);
+  }
+  .links a:hover {
+    color: var(--ink);
   }
 </style>

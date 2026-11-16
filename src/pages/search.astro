@@ -2,45 +2,36 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Search">
-  <div class="search-page">
-    <h1>Search</h1>
-    <p>Type keywords to search through blog posts:</p>
-    <!-- 검색 UI 컨테이너 -->
+<BaseLayout title="Search" description="Search blog posts">
+  <div class="page">
+    <h1 class="page-title">Search</h1>
+    <p class="lead">Search posts and pages by keyword.</p>
     <div id="search-container"></div>
-    <!-- 태그라인 추가 -->
-    <p class="search-tagline">Search. Sense. Synthesize.</p>
   </div>
 
-  <!-- Pagefind UI 스크립트 및 스타일 포함 -->
-  <link rel="stylesheet" href="/pagefind/pagefind-ui.css">
+  <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
   <script src="/pagefind/pagefind-ui.js" is:inline></script>
   <script is:inline>
     window.addEventListener('DOMContentLoaded', () => {
-      new PagefindUI({ element: "#search-container" });
+      new PagefindUI({ element: '#search-container', showImages: false, resetStyles: false });
     });
   </script>
 </BaseLayout>
 
 <style>
-  .search-page {
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-  }
-  .search-page h1 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
-  .search-page p {
+  .lead {
+    color: var(--muted);
     margin-bottom: 1.5rem;
   }
-  .search-tagline {
-    font-style: italic;
-    opacity: 0.6;
-    text-align: center;
-    margin-top: 2rem;
-    font-size: 1.1rem;
-    letter-spacing: 0.5px;
+  #search-container {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: var(--accent);
+    --pagefind-ui-text: var(--ink);
+    --pagefind-ui-background: var(--bg);
+    --pagefind-ui-border: var(--rule);
+    --pagefind-ui-tag: var(--soft);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 3px;
+    --pagefind-ui-font: var(--font-serif);
   }
 </style>

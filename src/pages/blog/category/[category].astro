@@ -1,184 +1,40 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import PostCard from '../../../components/PostCard.astro';
-import Paginator from '../../../components/Paginator.astro';
-import { getPostsByCategory, getUniqueTagsInCategory, paginate } from '../../../lib/content';
-import { categories, type CategoryId } from '../../../config/categories';
+import PostList from '../../../components/PostList.astro';
+import CategoryNav from '../../../components/CategoryNav.astro';
+import { getPostsByCategory, getUniqueTagsInCategory } from '../../../lib/content';
+import { categories } from '../../../config/categories';
 
 export async function getStaticPaths() {
-  return categories.map(cat => ({ params: { category: cat.id } }));
+  return categories.map((cat) => ({ params: { category: cat.id } }));
 }
 
 const { category } = Astro.params;
-const pageParam = Astro.url.searchParams.get('page');
-const currentPage = pageParam ? parseInt(pageParam) : 1;
-
-const posts = await getPostsByCategory(category as CategoryId);
-const categoryTags = await getUniqueTagsInCategory(category as CategoryId);
-const paginated = paginate(posts, currentPage, 6);
-
-const categoryName = categories.find(c => c.id === category)?.name || category;
+const posts = await getPostsByCategory(category);
+const tags = await getUniqueTagsInCategory(category);
+const categoryName = categories.find((c) => c.id === category)?.name || category;
 ---
 
-<BaseLayout title={`Category: ${categoryName}`}>
-  <div class="category-page">
-    <aside class="sidebar">
-      <section class="sidebar-section">
-        <h3>Categories</h3>
-        <ul>
-          {categories.map(cat => (
-            <li>
-              <a
-                href={`/blog/category/${cat.id}`}
-                class:list={['category-link', { active: cat.id === category }]}
-              >
-                {cat.name}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {categoryTags.length > 0 && (
-        <section class="sidebar-section">
-          <h3>Tags in {categoryName}</h3>
-          <div class="tag-cloud">
-            {categoryTags.map(tag => (
-              <a href={`/blog/tag/${tag}`} class="tag">#{tag}</a>
-            ))}
-          </div>
-        </section>
-      )}
-    </aside>
-
-    <div class="main-content">
-      <header class="page-header">
-        <h1>Category: {categoryName}</h1>
-        <p>{posts.length} posts</p>
-      </header>
-
-      <div class="posts-grid">
-        {paginated.items.map(post => (
-          <PostCard
-            title={post.data.title}
-            url={`/blog/${post.slug}`}
-            date={post.data.date}
-            summary={post.data.summary}
-            category={post.data.category}
-            tags={post.data.tags}
-            thumbnail={post.data.thumbnail}
-          />
-        ))}
-      </div>
-
-      {paginated.items.length === 0 && (
-        <p class="no-posts">No posts yet in {categoryName}.</p>
-      )}
-
-      <Paginator
-        current={paginated.current}
-        pages={paginated.pages}
-        prev={paginated.prev}
-        next={paginated.next}
-        buildHref={(p) => `/blog/category/${category}?page=${p}`}
-      />
-    </div>
+<BaseLayout title={categoryName} description={`Posts in ${categoryName}`}>
+  <div class="page">
+    <h1 class="page-title">{categoryName}</h1>
+    <p class="lead">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</p>
+    <CategoryNav current={category} />
+    {tags.length > 0 && (
+      <p class="tags">Tags: {tags.map((t, i) => <Fragment>{i > 0 && ', '}<a href={`/blog/tag/${t}`}>{t}</a></Fragment>)}</p>
+    )}
+    <PostList posts={posts} showCategory={false} />
   </div>
 </BaseLayout>
 
 <style>
-  .category-page {
-    max-width: 1400px;
-    margin: 2rem auto;
-    padding: 0 2rem;
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 3rem;
+  .lead {
+    color: var(--muted);
+    margin-bottom: 1.2rem;
   }
-  .page-header {
-    margin-bottom: 2rem;
-  }
-  .page-header h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-  }
-  .page-header p {
-    color: var(--color-text);
-    opacity: 0.6;
-  }
-  .posts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 2rem;
-    margin-bottom: 2rem;
-  }
-  .no-posts {
-    text-align: center;
-    padding: 4rem 0;
-    color: var(--color-text);
-    opacity: 0.6;
-  }
-  .sidebar {
-    position: sticky;
-    top: 100px;
-    height: fit-content;
-  }
-  .sidebar-section {
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    background-color: var(--color-bg-secondary);
-    border-radius: 12px;
-  }
-  .sidebar-section h3 {
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-  }
-  .sidebar-section ul {
-    list-style: none;
-    padding: 0;
-  }
-  .sidebar-section li {
-    margin-bottom: 0.5rem;
-  }
-  .category-link {
-    display: block;
-    padding: 0.5rem;
-    border-radius: 6px;
-    text-decoration: none;
-    color: var(--color-text);
-    transition: background-color 0.2s ease;
-  }
-  .category-link:hover,
-  .category-link.active {
-    background-color: var(--color-primary);
-    color: white;
-  }
-  .tag-cloud {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-  .tag-cloud .tag {
-    font-size: 0.85rem;
-    color: var(--color-primary);
-    opacity: 0.8;
-    text-decoration: none;
-  }
-  .tag-cloud .tag:hover {
-    opacity: 1;
-  }
-  @media (max-width: 1024px) {
-    .category-page {
-      grid-template-columns: 1fr;
-    }
-    .sidebar {
-      position: static;
-      margin-top: 3rem;
-    }
-  }
-  @media (max-width: 768px) {
-    .posts-grid {
-      grid-template-columns: 1fr;
-    }
+  .tags {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin: -0.6rem 0 1.4rem;
   }
 </style>

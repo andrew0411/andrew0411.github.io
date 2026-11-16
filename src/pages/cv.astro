@@ -116,11 +116,11 @@ const websiteLabel = profile.website.replace(/^https?:\/\//, '');
 
 <style>
   .cv-toolbar {
-    max-width: 860px;
-    margin: 2rem auto 0;
-    padding: 0 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 0;
     display: flex;
-    align-items: center;
+    align-items: baseline;
     justify-content: space-between;
     gap: 1rem;
     flex-wrap: wrap;
@@ -128,28 +128,27 @@ const websiteLabel = profile.website.replace(/^https?:\/\//, '');
 
   .download {
     display: inline-block;
-    padding: 0.5rem 1.25rem;
-    background-color: var(--color-primary);
-    color: #fff;
-    border-radius: 8px;
-    font-weight: 500;
+    padding: 0.35rem 0.9rem;
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    text-decoration: none;
   }
 
   .download:hover {
-    background-color: var(--color-primary-hover);
-    color: #fff;
+    background-color: var(--accent);
+    color: var(--bg);
   }
 
   .updated {
-    font-size: 0.9rem;
-    opacity: 0.7;
+    font-size: 0.85rem;
+    color: var(--muted);
   }
 
   .cv {
-    max-width: 860px;
-    margin: 1.5rem auto 0;
-    padding: 0 1rem;
-    font-size: 0.95rem;
+    max-width: 800px;
+    margin: 2rem auto 0;
+    padding: 0 1.5rem;
+    font-size: 0.9rem;
     line-height: 1.5;
   }
 
@@ -159,24 +158,23 @@ const websiteLabel = profile.website.replace(/^https?:\/\//, '');
   }
 
   .cv-header h1 {
-    font-size: 2rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    font-size: 2.2rem;
+    font-weight: 400;
     margin-bottom: 0.25rem;
   }
 
   .contact span {
     margin: 0 0.4rem;
-    opacity: 0.5;
+    color: var(--muted);
   }
 
   .cv h2 {
-    font-size: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    border-bottom: 1px solid var(--color-text);
-    margin: 1.25rem 0 0.5rem;
-    padding-bottom: 0.15rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    font-style: italic;
+    border-bottom: 1px solid var(--rule);
+    margin: 1.5rem 0 0.6rem;
+    padding-bottom: 0.2rem;
   }
 
   .cv p {
@@ -260,13 +258,17 @@ const websiteLabel = profile.website.replace(/^https?:\/\//, '');
     :global(html),
     :global(html[data-theme]),
     :global(body) {
-      --color-text: #000;
-      --color-bg: #fff;
-      --color-primary: #1a4fa0;
+      --ink: #000;
+      --bg: #fff;
+      --muted: #333;
+      --rule: #000;
+      --accent: #1a4fa0;
       background: #fff !important;
       color: #000 !important;
     }
 
+    :global(.site-header),
+    :global(.skip-link),
     :global(nav),
     :global(footer),
     .cv-toolbar {
@@ -286,12 +288,24 @@ const websiteLabel = profile.website.replace(/^https?:\/\//, '');
       color: #000;
     }
 
+    :global(.cv a) {
+      text-decoration: none;
+    }
+
     .cv-header h1 {
       font-size: 18pt;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
 
     .cv h2 {
       font-size: 10.5pt;
+      font-weight: 700;
+      font-style: normal;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom-color: #000;
       margin-top: 0.8rem;
       break-after: avoid;
     }

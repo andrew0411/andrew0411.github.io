@@ -1,0 +1,68 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { categories } from '../config/categories';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+  showCategory?: boolean;
+}
+
+const { posts, showCategory = true } = Astro.props;
+const catName = (id: string) => categories.find((c) => c.id === id)?.name ?? id;
+const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+
+const byYear = new Map<number, CollectionEntry<'blog'>[]>();
+for (const p of posts) {
+  const y = p.data.date.getUTCFullYear();
+  if (!byYear.has(y)) byYear.set(y, []);
+  byYear.get(y)!.push(p);
+}
+---
+
+{posts.length === 0 && <p class="muted">No posts here yet.</p>}
+
+{[...byYear.entries()].map(([year, items]) => (
+  <section class="year">
+    <h2 class="year-title">{year}</h2>
+    <ul class="rows">
+      {items.map((p) => (
+        <li>
+          <time datetime={p.data.date.toISOString()}>{fmt(p.data.date)}</time>
+          <span>
+            <a href={`/blog/${p.slug}`}>{p.data.title}</a>
+            {(p.data.summary || showCategory) && (
+              <span class="meta">
+                {p.data.summary}
+                {p.data.summary && showCategory && ', '}
+                {showCategory && <Fragment>in <a class="cat" href={`/blog/category/${p.data.category}`}>{catName(p.data.category)}</a></Fragment>}
+              </span>
+            )}
+          </span>
+        </li>
+      ))}
+    </ul>
+  </section>
+))}
+
+<style>
+  .year {
+    padding: 1.2rem 0 0.6rem;
+    border-top: 1px solid var(--rule);
+  }
+  .year-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 0.5rem;
+  }
+  .rows li {
+    padding: 0.45rem 0;
+  }
+  .cat {
+    color: var(--muted);
+  }
+  .cat:hover {
+    color: var(--ink);
+  }
+</style>

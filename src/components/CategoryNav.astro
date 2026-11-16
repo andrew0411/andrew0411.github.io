@@ -1,0 +1,43 @@
+---
+import { categories } from '../config/categories';
+import { getAllPosts } from '../lib/content';
+
+interface Props {
+  current?: string;
+}
+
+const { current } = Astro.props;
+const posts = await getAllPosts();
+const used = categories.filter((c) => posts.some((p) => p.data.category === c.id));
+---
+
+<nav class="cats" aria-label="Blog categories">
+  <a href="/blog" class:list={[{ active: !current }]} aria-current={!current ? 'page' : undefined}>All</a>
+  {used.map((c) => (
+    <a href={`/blog/category/${c.id}`} class:list={[{ active: current === c.id }]} aria-current={current === c.id ? 'page' : undefined}>
+      {c.name}
+    </a>
+  ))}
+</nav>
+
+<style>
+  .cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1.1rem;
+    margin-bottom: 1.6rem;
+    font-size: 0.95rem;
+  }
+  .cats a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .cats a:hover {
+    color: var(--ink);
+  }
+  .cats a.active {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+  }
+</style>

@@ -2,88 +2,63 @@
 import { siteConfig } from '../config/siteConfig';
 import ThemeToggle from './ThemeToggle.astro';
 
-const currentPath = Astro.url.pathname;  // 현재 페이지의 경로 (예: "/blog", "/about" 등)
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) =>
+  href === '/' ? currentPath === '/' : currentPath === href || currentPath.startsWith(`${href}/`);
 ---
 
-<nav>
-  <div class="nav-container">
-    <!-- 로고: 파비콘 + 사이트 제목을 홈 링크로 사용 -->
-    <a href="/" class="logo">
-      <img src="/favicon.svg" alt="Logo" class="logo-icon" />
-      <span>{siteConfig.title}</span>
-    </a>
-
-    <div class="nav-links">
-      {siteConfig.nav.map(item => (
-        <a
-          href={item.href}
-          class:list={['nav-link', { active: currentPath.startsWith(item.href) && item.href !== '/' }]}
-        >
+<header class="site-header" data-pagefind-ignore="all">
+  <div class="bar">
+    <a href="/" class="brand">{siteConfig.author}</a>
+    <nav aria-label="Main">
+      {siteConfig.nav.map((item) => (
+        <a href={item.href} class:list={[{ active: isActive(item.href) }]} aria-current={isActive(item.href) ? 'page' : undefined}>
           {item.label}
         </a>
       ))}
       <ThemeToggle />
-    </div>
+    </nav>
   </div>
-</nav>
+</header>
 
 <style>
-  nav {
-    background-color: var(--color-bg);
-    border-bottom: 1px solid var(--color-border);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .nav-container {
-    max-width: 1200px;
+  .bar {
+    max-width: var(--measure);
     margin: 0 auto;
-    padding: 1rem 2rem;
+    padding: 2.2rem 1.5rem 0;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
   }
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1.25rem;
-    font-weight: bold;
-    color: var(--color-text);
+  .brand {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--ink);
     text-decoration: none;
   }
-  .logo-icon {
-    width: 28px;
-    height: 28px;
-    flex-shrink: 0;
-  }
-  .nav-links {
+  nav {
     display: flex;
-    gap: 1.5rem;
-    align-items: center;
+    align-items: baseline;
+    gap: 1.2rem;
+    font-size: 0.95rem;
+    flex-wrap: wrap;
   }
-  .nav-link {
-    color: var(--color-text);
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
   }
-  .nav-link:hover,
-  .nav-link.active {
-    opacity: 1;
+  nav a:hover,
+  nav a.active {
+    color: var(--ink);
   }
-  @media (max-width: 768px) {
-    .nav-container {
-      padding: 1rem;
+  @media (max-width: 640px) {
+    .bar {
+      padding-top: 1.4rem;
     }
-    .logo {
-      font-size: 1.1rem;
-    }
-    .logo-icon {
-      width: 24px;
-      height: 24px;
-    }
-    .nav-links {
-      gap: 1rem;
+    nav {
+      gap: 0.9rem;
       font-size: 0.9rem;
     }
   }

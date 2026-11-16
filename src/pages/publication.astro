@@ -2,92 +2,50 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Citation from '../components/Citation.astro';
 import { profile } from '../data/profile';
-
-const years = [...new Set(profile.publications.map((p) => p.year))].sort((a, b) => b - a);
 ---
 
-<BaseLayout title="Publications" description="Publications and presentations">
-  <div class="content-wrapper">
-    <h1>Publications</h1>
-    <p class="scholar-link">
-      <a href={profile.links.scholar} target="_blank" rel="noopener noreferrer">Google Scholar Profile</a>
-    </p>
+<BaseLayout title="Publications" description={`Publications and presentations of ${profile.name}`}>
+  <div class="page">
+    <h1 class="page-title">Publications</h1>
+    <p class="lead">Also on <a href={profile.links.scholar}>Google Scholar</a>.</p>
 
-    <h2 class="group-title">Journal Articles</h2>
-    {years.map((year) => (
-      <section class="year-section">
-        <h3>{year}</h3>
-        <ul>
-          {profile.publications.filter((p) => p.year === year).map((p) => (
-            <li><Citation item={p} /></li>
-          ))}
-        </ul>
-      </section>
-    ))}
+    <section class="section">
+      <h2 class="section-title">Journal articles</h2>
+      <ol class="refs">
+        {profile.publications.map((p) => <li><Citation item={p} /></li>)}
+      </ol>
+    </section>
 
-    <h2 class="group-title">Presentations</h2>
-    <section class="year-section">
-      <ul>
-        {profile.presentations.map((p) => (
-          <li><Citation item={p} /></li>
-        ))}
-      </ul>
+    <section class="section">
+      <h2 class="section-title">Presentations</h2>
+      <ol class="refs">
+        {profile.presentations.map((p) => <li><Citation item={p} /></li>)}
+      </ol>
     </section>
   </div>
 </BaseLayout>
 
 <style>
-  .content-wrapper {
-    max-width: 900px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-    line-height: 1.8;
-  }
-
-  .content-wrapper h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    font-weight: 700;
-  }
-
-  .scholar-link {
-    margin-bottom: 2rem;
-    font-size: 1.1rem;
-  }
-
-  .group-title {
-    font-size: 1.6rem;
-    margin: 2rem 0 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--color-border);
-    font-weight: 600;
-  }
-
-  .year-section {
+  .lead {
+    color: var(--muted);
     margin-bottom: 1.5rem;
   }
-
-  .year-section h3 {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-    opacity: 0.75;
-  }
-
-  .year-section ul {
+  .refs {
     list-style: none;
+    counter-reset: ref;
   }
-
-  .year-section li {
-    margin-bottom: 1rem;
-    padding-left: 1.5rem;
+  .refs li {
+    counter-increment: ref;
     position: relative;
+    padding-left: 2rem;
+    margin-bottom: 1rem;
+    line-height: 1.55;
   }
-
-  .year-section li::before {
-    content: "•";
+  .refs li::before {
+    content: counter(ref) '.';
     position: absolute;
     left: 0;
-    opacity: 0.6;
-    font-weight: bold;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
   }
 </style>

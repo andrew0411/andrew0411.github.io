@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostList from '../../../components/PostList.astro';
+import { getPostsByTag, getUniqueTags } from '../../../lib/content';
+
+export async function getStaticPaths() {
+  const tags = await getUniqueTags();
+  return tags.map((tag) => ({ params: { tag } }));
+}
+
+const { tag } = Astro.params;
+const posts = await getPostsByTag(tag);
+---
+
+<BaseLayout title={`Tag: ${tag}`} description={`Posts tagged ${tag}`}>
+  <div class="page">
+    <p class="back"><a href="/blog">Blog</a></p>
+    <h1 class="page-title">Tagged “{tag}”</h1>
+    <p class="lead">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</p>
+    <PostList posts={posts} />
+  </div>
+</BaseLayout>
+
+<style>
+  .back {
+    font-size: 0.9rem;
+    margin-bottom: 0.6rem;
+  }
+  .lead {
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+  }
+</style>
