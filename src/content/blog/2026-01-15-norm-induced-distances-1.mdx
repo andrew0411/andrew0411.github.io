@@ -1,0 +1,134 @@
+---
+title: "Advanced Norm-Induced Distances in ML"
+date: 2026-01-15
+category: "mathematics"
+tags: ["Metric"]
+summary: "Mahalanobis, l0 Distance"
+thumbnail: "/blog/2026-01-15-norm-induced-distance(1).png"
+draft: false
+---
+
+## 1. Mahalanobis Distance
+
+### Origin
+Mahalanobis distance was introduced by P.C. Mahalanobis in his 1936 work *On the generalized distance in statistics*, motivated by the need to measure how **far** multivariate observations are when variables have different scales and are correlated.
+
+In regression diagnostics, it later became a standard way to quantify how unusual a predictor vector is relative to the **"center"** of the design, i.e., an alternative new of leverage.
+
+A key conceptual advance is that it treats "distance" relative to the covariance structure, not raw coordinate differences, which aligns naturally with multivariate normal geometry.
+
+### Definition
+Let $x\in \mathbb{R}^p$, and let $\mu in \mathbb{R}^p$ and $\Sigma \in \mathbb{R}^{p\times p}$ with $\Sigma$ symmetric positive definite. The **Mahalanobis distance** from $x$ to $\mu$ (relative to $\Sigma$) is
+
+$$
+d_M(x, \mu ; \Sigma)= \sqrt{(x-\mu)^\top \Sigma^{-1} (x-\mu)}.
+$$
+
+More generally, for two points $x, y$, one may define $d_M(x,y;\Sigma)=\sqrt{(x-y)^\top \Sigma^{-1} (x-y)}$, which is a metric when $\Sigma >0$.
+
+### Insight
+#### 1. Why Euclidean distance fails in correlated, multi-scale data
+
+If one feature is measured in millimeters and another in kilometers, Euclidean distance is dominated by the larger-scale feature.
+If two features are strongly correlated, moving along the correlation direction should be considered "less surprising" than moving orthogonally, but Euclidean distance ignores that.
+
+#### 2. Whitening
+If $\Sigma = LL^\top$ (Cholesky factorization), define the whitened variable $z=L^{-1}(x-\mu)$.
+Then
+$$
+||z||^2_2=(x-\mu)^\top(L^{-1})^\top L^{-1}(x-\mu) = (x-\mu)^\top \Sigma^{-1} (x-\mu) = d^2d_M
+$$
+
+So, Mahalanobis distance is **Euclidean distance after "standardize + decorrelate"**
+
+#### 3. A concrete 2D visualization (elliptical contours)
+
+- **Data generation and Mahalanobis Distance Implementation**
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Correlated 2D covariance
+Sigma = np.array([[4.0, 3.2],
+                  [3.2, 4.0]])
+
+mu = np.array([0.0, 0.0])
+
+# Sample data
+X = np.random.multivariate_normal(mu, Sigma, size=500)
+
+# Two candidate points
+a = np.array([3.0, 0.0])
+b = np.array([2.2, 2.2])
+
+Sigma_inv = np.linalg.inv(Sigma)
+
+def d_mahal(x):
+    v = x - mu
+    return np.sqrt(v @ Sigma_inv @ v)
+
+def d_euc(x):
+    return np.linalg.norm(x - mu)
+
+print("Euclidean(a), Mahalanobis(a):", d_euc(a), d_mahal(a))
+print("Euclidean(b), Mahalanobis(b):", d_euc(b), d_mahal(b))
+```
+- **Result**
+
+```text
+Euclidean(a), Mahalanobis(a): 3.0 2.50
+Euclidean(b), Mahalanobis(b): 3.11 1.16
+```
+- **Visualization**
+
+```python
+plt.figure()
+plt.scatter(X[:,0], X[:,1], s=10, alpha=0.4)
+plt.scatter([a[0], b[0]], [a[1], b[1]], s=80)
+plt.text(a[0]+0.1, a[1]+0.1, "a")
+plt.text(b[0]+0.1, b[1]+0.1, "b")
+
+# Plot Mahalanobis contours: (x-mu)' Sigma^{-1} (x-mu) = c
+xs = np.linspace(-8, 8, 200)
+ys = np.linspace(-8, 8, 200)
+XX, YY = np.meshgrid(xs, ys)
+grid = np.stack([XX, YY], axis=-1)
+V = grid - mu
+Q = (V @ Sinv * V).sum(axis=-1)  # quadratic form
+
+plt.contour(XX, YY, Q, levels=[1,4,9,16], linewidths=1)
+plt.axis("equal")
+plt.title("Mahalanobis contours")
+plt.show()
+```
+
+- **Result**
+
+![](/blog/2026-01-15-norm-induced-distance(1).png)
+
+Points lying along the high-variance/correlation direction can have relatively small Mahalanobis Distance even when Euclidean distance is large, because the direction is expected under $\Sigma$.
+
+### Usage
+
+#### 1. Gaussian Classification
+
+Quadratic discriminant boundaries depend on $(x-\mu_k)^\top \Sigma^{-1}_k (x-\mu_k)$, i.e., class-conditional distance in covariance-scaled space.
+
+#### 2. Outlier/leverage diagnostics
+
+In regression diagnostics, Mahalanobis distance is sued as a measure of how far an observation is from the "center" of the predictors and is treated as an alternative measure of leverage.
+
+#### 3. Causal Inference / matching
+
+SAS's PSMATCH documentation explicitly provides Mahalanobis distance as a matching metric for continuous covariates
+
+> PSMATCH provides matching, weighting and stratification tools for propensity score analyses, and supports Mahalanobis distance as a matching metric.
+
+## 2. $l_0$ Distance
+
+### Origin
+
+The $l_0$ quantity emerged as a convenient shorthand for **cardinality** (the number of nonzero components) when sparse solutions became central in signal processing and statistics; e.g., convex-optimization lectures explicitly define $\text{card}(x)$ as the count of nonzeros and note its connection to "$l_0$".
+
+A closely related idea, counting coordinate-wise mismatches as a distance, was formalized by Hamming (1950), who defined distance between bit-strings as the number of coordinates in which they differ.
+
