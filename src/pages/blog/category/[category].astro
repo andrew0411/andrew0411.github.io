@@ -4,8 +4,10 @@ import PostList from '../../../components/PostList.astro';
 import CategoryNav from '../../../components/CategoryNav.astro';
 import { getPostsByCategory, getUniqueTagsInCategory } from '../../../lib/content';
 import { categories } from '../../../config/categories';
+import { siteConfig } from '../../../config/siteConfig';
 
 export async function getStaticPaths() {
+  if (!siteConfig.blogEnabled) return [];
   return categories.map((cat) => ({ params: { category: cat.id } }));
 }
 

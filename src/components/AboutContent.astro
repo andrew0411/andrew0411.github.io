@@ -51,7 +51,7 @@ const { links, researchInterests } = profile;
     </ul>
   </section>
 
-  <section class="section">
+  {recent.length > 0 && <section class="section">
     <h2 class="section-title">Recent writing</h2>
     <ul class="rows">
       {recent.map((p) => (
@@ -62,7 +62,7 @@ const { links, researchInterests } = profile;
       ))}
     </ul>
     <p class="all"><a href="/blog">All posts</a></p>
-  </section>
+  </section>}
 </div>
 
 <style>

@@ -11,7 +11,7 @@ const isActive = (href: string) =>
   <div class="bar">
     <a href="/" class="brand">{siteConfig.author}</a>
     <nav aria-label="Main">
-      {siteConfig.nav.map((item) => (
+      {siteConfig.nav.filter((item) => siteConfig.blogEnabled || !('blog' in item)).map((item) => (
         <a href={item.href} class:list={[{ active: isActive(item.href) }]} aria-current={isActive(item.href) ? 'page' : undefined}>
           {item.label}
         </a>

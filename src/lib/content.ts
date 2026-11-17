@@ -1,10 +1,12 @@
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
+import { siteConfig } from '../config/siteConfig';
 
 type BlogPost = CollectionEntry<'blog'>;  // blog 컬렉션의 엔트리 타입
 
-// 모든 게시글 불러와 날짜 최신순 정렬 (draft 글은 제외)
+// 모든 게시글 불러와 날짜 최신순 정렬 (draft 글은 제외, blogEnabled=false면 빈 목록)
 export async function getAllPosts(): Promise<BlogPost[]> {
+  if (!siteConfig.blogEnabled) return [];
   const posts = await getCollection('blog', ({ data }) => !data.draft);
   return posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 }

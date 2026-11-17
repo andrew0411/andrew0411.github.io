@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostList from '../../components/PostList.astro';
 import CategoryNav from '../../components/CategoryNav.astro';
 import { getAllPosts } from '../../lib/content';
+import { siteConfig } from '../../config/siteConfig';
 
 const posts = await getAllPosts();
 ---
@@ -10,9 +11,15 @@ const posts = await getAllPosts();
 <BaseLayout title="Blog" description="Notes on machine learning, mathematics, and finance">
   <div class="page">
     <h1 class="page-title">Blog</h1>
-    <p class="lead">Notes on machine learning, mathematics, and finance.</p>
-    <CategoryNav />
-    <PostList posts={posts} />
+    {siteConfig.blogEnabled ? (
+      <Fragment>
+        <p class="lead">Notes on machine learning, mathematics, and finance.</p>
+        <CategoryNav />
+        <PostList posts={posts} />
+      </Fragment>
+    ) : (
+      <p class="lead">No posts yet.</p>
+    )}
   </div>
 </BaseLayout>
 
